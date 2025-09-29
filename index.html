@@ -22,11 +22,10 @@
     }
 
     *{box-sizing:border-box}
+    html,body{height:100%}
     body{
-      margin:0; font-family:'Cairo',system-ui,Segoe UI,Roboto,Arial,sans-serif;
-      background:var(--bg); color:var(--text);
-      transition:background .3s,color .3s;
-      padding-bottom:var(--footer-h); /* علشان الفوتر الثابت ما يغطيش المحتوى */
+      margin:0; font-family:"Cairo", system-ui, sans-serif; background:var(--bg); color:var(--text);
+      padding-bottom:var(--footer-h);
     }
 
     /* ===== الغلاف (Cover) بدون نص ===== */
@@ -34,9 +33,7 @@
       position:relative; width:100%; height:var(--cover-h);
       overflow:hidden; border-bottom:1px solid var(--cover-border); background:#000;
     }
-    .cover__img{
-      position:absolute; inset:0; width:80%; height:80%;
-      object-fit:cover; object-position:center;
+    .cover__img{ position:absolute; inset:0; width:100%; height:100%; object-fit:cover; object-position:center;
       filter:saturate(1.05) contrast(1.05);
     }
     .cover__overlay{ position:absolute; inset:0; background:var(--cover-grad); pointer-events:none; }
@@ -60,27 +57,60 @@
       white-space:nowrap; overflow:hidden; text-overflow:ellipsis;
       max-width:min(70vw,520px);  /* يخليها سطر واحد منسق */
     }
-    .toolbar{display:flex;gap:8px;flex-wrap:wrap;align-items:center}
-    .btn{background:var(--primary);color:#fff;padding:10px 16px;border:none;border-radius:10px;font-weight:800;cursor:pointer}
-    .btn-ghost{background:transparent;border:1px dashed #0003;color:var(--text)}
-    .btn-danger{background:var(--danger);color:#fff}
+
+    .toolbar{display:flex;gap:10px;flex-wrap:wrap;align-items:center}
+    /* قاعدة عامة موحّدة للأزرار */
+    .btn,.btn-ghost,.btn-danger,.nav button{
+      display:inline-flex;align-items:center;justify-content:center;gap:8px;
+      height:44px;padding:0 16px;line-height:1;font-weight:800;cursor:pointer;
+      border-radius:9999px;border:1px solid transparent;
+      transition:transform .12s ease, box-shadow .2s ease, filter .2s ease;
+    }
+    /* أساسي */
+    .btn{
+      background:linear-gradient(180deg,#324b8a,var(--primary));
+      color:#fff; box-shadow:0 6px 16px #0003, inset 0 -2px 0 #0003;
+    }
+    .btn:hover{ transform:translateY(-1px); box-shadow:0 10px 24px #0004; }
+    .btn:active{ transform:none; }
+    /* شفاف/ثانوي */
+    .btn-ghost{
+      background:var(--card); border-color:#0002; color:var(--text);
+      box-shadow:0 2px 8px #0001;
+    }
+    .btn-ghost:hover{ transform:translateY(-1px); }
+    /* خطير */
+    .btn-danger{
+      background:linear-gradient(180deg,#ef4444,#dc2626); color:#fff;
+    }
 
     /* ===== النافبار ===== */
     .nav{display:flex;gap:12px;justify-content:center;margin:12px;flex-wrap:wrap}
     .nav button{
-      padding:10px 14px;border-radius:10px;border:1px solid #0002;background:var(--card);
-      cursor:pointer;font-weight:800;color:var(--text);transition:transform .15s, box-shadow .2s
+      background:var(--card); color:var(--text); border:1px solid #0002;
+      padding:0 14px; height:40px; box-shadow:0 2px 8px #0001;
+      cursor:pointer; font-weight:800; border-radius:9999px;
+      transition:transform .15s, box-shadow .2s;
     }
-    .nav button:hover{ transform: translateY(-2px); box-shadow:0 6px 14px #0003 }
-    .nav button.active{background:var(--accent);color:#000}
+    .nav button:hover{ transform: translateY(-1px); box-shadow:0 8px 18px #0002 }
+    .nav button.active{background:var(--primary);color:#fff;border-color:transparent}
 
     /* ===== بطاقات وجداول ===== */
     .container{padding:16px;max-width:1200px;margin:auto}
-    .card{background:var(--card);border:1px solid #0002;border-radius:16px;box-shadow:0 6px 20px #0002;margin-bottom:20px;overflow:hidden; animation: fadeUp .5s ease var(--i,0ms) both}
-    .card-h{padding:14px 20px;font-weight:900;background:linear-gradient(90deg,var(--primary),var(--accent));color:#000; -webkit-background-clip:text; -webkit-text-fill-color:transparent;}
-    .card-h::before{content:'';display:block;height:3px;background:linear-gradient(90deg,var(--primary),var(--accent)); background-size:200% 100%; animation: shimmer 2.1s linear infinite}
+    .card{background:var(--card);border:1px solid #0002;border-radius:16px;overflow:hidden; animation: fadeUp .5s ease var(--i,0ms) both}
+    .card-h{padding:14px 20px;font-weight:900;background:linear-gradient(90deg,var(--primary),#7a93d6); color:#fff}
+    .card-h small{opacity:.85;font-weight:700}
+    .card-h .right{float:inline-end}
+    .card-h .right>*{vertical-align:middle}
+    .card-h .right .btn-ghost{background:transparent;border-color:#ffffff55;color:#fff}
+    .card-h .right .btn-ghost:hover{filter:brightness(1.05)}
+    .card-h .title{
+      font-size:18px; display:inline-flex; gap:8px; align-items:center;
+      background:linear-gradient(90deg, #fff, #f5f7ff); -webkit-background-clip:text; -webkit-text-fill-color:transparent;
+    }
+    .card-h::before{content:'';display:block;height:3px;background:linear-gradient(90deg,transparent,var(--accent),transparent)}
     .card-b{padding:16px}
-    .input{padding:10px;border:1px solid #0002;border-radius:10px;background:var(--card);color:var(--text)}
+    .input{padding:10px;border:1px solid #0002;border-radius:10px;background:var(--card);color:var(--text);height:44px}
     .hint{color:var(--muted);font-size:13px}
 
     .table-wrap{border:1px solid #0002;border-radius:12px;overflow:auto;max-height:60vh}
@@ -95,35 +125,18 @@
     img.avatar{width:44px;height:44px;border-radius:10px;object-fit:cover;border:2px solid var(--accent)}
     a.tel{color:inherit;text-decoration:underline dotted}
 
-    /* زرار واتساب */
-    .tel-wrap{display:flex;align-items:center;gap:8px;flex-wrap:wrap}
-    .wa-btn{
-      display:inline-flex;align-items:center;gap:8px;
-      padding:6px 10px;border-radius:10px;border:1px solid #0002;
-      background:#25D366;color:#fff;text-decoration:none;font-weight:800;
-      box-shadow:0 2px 8px #0002;transform:translateZ(0)
+    .stats-bar{display:flex;gap:10px;flex-wrap:wrap;margin:8px 0}
+    .stat{
+      display:flex;align-items:center;gap:8px;background:var(--card);border:1px solid #0002;border-radius:12px;
+      padding:10px 12px;font-weight:900;color:var(--text)
     }
-    .wa-btn:hover{filter:brightness(1.05);transform:translateY(-1px)}
-    .wa-ic{width:18px;height:18px;display:block}
+    .stat i{font-style:normal;opacity:.75}
 
-    @media(max-width:768px){
-      table{min-width:unset}
-      thead{display:none}
-      tbody tr{display:grid;grid-template-columns:1fr;gap:8px;border:1px solid #0002;border-radius:12px;margin:10px 0;padding:12px;background:var(--card); animation: fadeUp .35s ease var(--i,0ms) both}
-      td{border:none;padding:6px 0}
-      td::before{content:attr(data-label) ' : ';font-weight:900;color:var(--muted)}
-    }
+    .error{background:#fee2e2;color:#7f1d1d;border:1px solid #fecaca;padding:12px;border-radius:10px}
 
-    .stats-bar{display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:10px;margin:12px 0}
-    .stat-box{background:var(--card);border:1px solid #0002;border-radius:12px;padding:10px;text-align:center;box-shadow:0 2px 8px #0001}
-    .stat-box h3{margin:0;font-size:12px;color:var(--muted)}
-    .stat-box div{font-size:20px;font-weight:900}
-    .error{padding:10px;border:1px solid #0002;border-radius:10px;background:#fee2e2;color:#7f1d1d}
-    .att-grid{display:grid;grid-template-columns:1fr 1fr;gap:16px}
-    @media(max-width:900px){.att-grid{grid-template-columns:1fr}}
-
+    /* ===== التوستات ===== */
     .toast-area{position:fixed;bottom:calc(var(--footer-h) + 8px);left:50%;transform:translateX(-50%);display:flex;flex-direction:column;gap:8px;z-index:50}
-    .toast{background:var(--card);color:var(--text);border:1px solid #0002;padding:10px 14px;border-radius:10px;box-shadow:0 6px 20px #0004;min-width:240px;transition:opacity .3s}
+    .toast{background:var(--card);color:var(--text);border:1px solid #0002;border-radius:12px;padding:10px 12px;box-shadow:0 6px 20px #0004;min-width:240px;transition:opacity .3s}
     .toast.ok{border-color:var(--ok)} .toast.warn{border-color:var(--warn)} .toast.err{border-color:var(--danger)}
 
     /* ===== فوتر ثابت ===== */
@@ -135,9 +148,8 @@
     }
 
     /* Animations */
-    @keyframes fadeUp { from {opacity:0; transform: translateY(8px)} to {opacity:1; transform:none} }
-    @keyframes pop { 0% {transform:scale(.9); opacity:0} 60% {transform:scale(1.03)} 100% {transform:scale(1); opacity:1} }
-    @keyframes shimmer { 0%{background-position:0 0} 100%{background-position:200% 0} }
+    @keyframes fadeUp { from {opacity:0; transform:translateY(6px)} to {opacity:1; transform:none} }
+    @keyframes pop { 0% {transform:scale(.92); opacity:0} 100% {transform:none; opacity:1} }
   </style>
 </head>
 <body>
@@ -156,571 +168,153 @@
     </div>
     <div class="toolbar">
       <button id="themeBtn" class="btn-ghost">🌙 Dark</button>
-      <button id="logoutBtn" class="btn-danger" style="display:none">🚪 خروج</button>
+      <button id="logoutBtn" class="btn-danger">خروج</button>
     </div>
   </header>
 
   <!-- ===== النافبار ===== -->
-  <div class="nav">
-    <button id="nav-login" class="active">🔐 دخول</button>
-    <button id="nav-data">👥 بيانات</button>
-    <button id="nav-att">✅ حضور</button>
-    <button id="nav-stats">📊 إحصائيات</button>
-  </div>
+  <nav class="nav">
+    <button class="active" data-tab="attendance">حضور ✅</button>
+    <button data-tab="data">بيانات 👥</button>
+    <button data-tab="login">دخول 🔐</button>
+    <button data-tab="stats">إحصائيات 📊</button>
+  </nav>
 
-  <!-- ===== Login ===== -->
-  <section id="page-login" class="container">
-    <div class="card" style="--i:0ms">
-      <div class="card-h">🔐 تسجيل الدخول</div>
+  <!-- ===== المحتوى ===== -->
+  <section class="container">
+    <!-- تبويب تسجيل الدخول -->
+    <div class="card" data-panel="login" style="display:none" style="--i:0ms">
+      <div class="card-h"><span class="title">تسجيل الدخول</span></div>
       <div class="card-b">
-        <div class="toolbar">
-          <input id="loginUser" class="input" placeholder="اسم المستخدم" style="flex:1">
-          <input id="loginMobile" class="input" placeholder="رقم الموبايل" inputmode="numeric" style="flex:1">
-          <label class="hint" style="display:flex;align-items:center;gap:6px"><input type="checkbox" id="rememberMe"> تذكّرني على هذا الجهاز</label>
+        <div class="hint">اكتب كلمة السر لفتح باقي الصفحات.</div>
+        <div style="display:flex;gap:10px;flex-wrap:wrap;margin-top:8px">
+          <input id="passInput" type="password" class="input" placeholder="كلمة السر">
           <button id="loginBtn" class="btn">دخول</button>
         </div>
-        <p id="loginMsg" class="hint" style="margin-top:8px"></p>
       </div>
     </div>
-  </section>
 
-  <!-- ===== Welcome ===== -->
-  <section id="page-welcome" class="container" hidden>
-    <div class="card" style="--i:80ms">
-      <div class="card-h">👋 مرحبًا بك</div>
-      <div class="card-b">
-        <h2 id="welcomeName"></h2>
-        <p id="welcomeVerse" style="font-weight:700;color:var(--primary)"></p>
-      </div>
-    </div>
-  </section>
-
-  <!-- ===== Data ===== -->
-  <section id="page-data" class="container" hidden>
-    <div class="card" style="--i:160ms">
-      <div class="card-h">👥 بيانات المخدومين</div>
-      <div class="card-b">
-        <div class="toolbar">
-          <select id="groupSelect" class="input"></select>
-          <input id="searchInput" class="input" placeholder="ابحث بالاسم/الموبايل/العنوان..." style="flex:1">
-          <button id="openSheetBtn" class="btn-ghost">✏️ تعديل</button>
-          <button id="refreshBtn" class="btn">⟳ تحديث</button>
+    <!-- تبويب البيانات -->
+    <div class="card" data-panel="data" style="--i:80ms">
+      <div class="card-h">
+        <span class="title">بيانات المخدومين 👥</span>
+        <span class="right">
           <button id="exportAllBtn" class="btn-ghost">⬇️ تصدير CSV الكل</button>
+        </span>
+      </div>
+      <div class="card-b">
+        <div style="display:flex;gap:10px;flex-wrap:wrap;align-items:center">
+          <label>الأسرة:
+            <select id="familyFilter">
+              <option value="">الكل</option>
+              <option>Family 1 Boys</option>
+              <option>Family 2 Girls</option>
+              <option>Family 3</option>
+            </select>
+          </label>
+          <input id="searchInput" class="input" placeholder="ابحث... بالاسم/الموبايل/العنوان">
+          <button id="refreshBtn" class="btn">تحديث ↻</button>
         </div>
+
         <div id="dataError" class="error" style="display:none"></div>
         <div class="stats-bar" id="topStats"></div>
+
         <div class="table-wrap">
           <table>
-            <thead><tr><th>الاسم</th><th>الأسرة</th><th>الموبايل</th><th>أب الاعتراف</th><th>صورة</th><th>العنوان</th><th>Fun Fact</th><th>ملاحظات</th></tr></thead>
+            <thead>
+              <tr>
+                <th>الاسم</th>
+                <th>الأسرة</th>
+                <th>الموبايل</th>
+                <th>العنوان</th>
+                <th>Fun Fact</th>
+                <th>ملاحظات</th>
+              </tr>
+            </thead>
             <tbody id="tbody"></tbody>
           </table>
         </div>
       </div>
     </div>
-  </section>
 
-  <!-- ===== Attendance ===== -->
-  <section id="page-att" class="container" hidden>
-    <div class="card" style="--i:240ms">
-      <div class="card-h">✅ تسجيل الحضور</div>
-      <div class="card-b att-grid">
-        <div>
-          <div class="toolbar">
-            <select id="attGroup" class="input"></select>
-            <input id="attSearch" class="input" placeholder="اكتب اسمًا ثم Enter لتمييزه حاضرًا" list="attSuggest" style="flex:1">
-            <datalist id="attSuggest"></datalist>
-          </div>
-          <div class="toolbar" style="margin-top:8px">
-            <button id="markAll" class="btn-ghost">تحديد الكل</button>
-            <button id="clearAll" class="btn-ghost">مسح</button>
-            <button id="saveLocal" class="btn">💾 حفظ محلي</button>
-            <button id="downloadCsv" class="btn-ghost">⬇️ تنزيل CSV</button>
-            <button id="uploadDrive" class="btn">⏫ رفع إلى Google Drive</button>
-          </div>
-          <div class="table-wrap" style="margin-top:10px">
-            <table>
-              <thead><tr><th>الاسم</th><th>حاضر؟</th></tr></thead>
-              <tbody id="attRoster"></tbody>
-            </table>
-          </div>
-        </div>
-        <div>
-          <div class="toolbar" style="justify-content:space-between"><h3 style="margin:0">حضور اليوم</h3><span class="hint" id="attCountHint">0 مختارين</span></div>
-          <div class="table-wrap">
-            <table>
-              <thead><tr><th>الاسم</th><th>الوقت</th></tr></thead>
-              <tbody id="attToday"></tbody>
-            </table>
-          </div>
-        </div>
-      </div>
-    </div>
-  </section>
-
-  <!-- ===== Stats ===== -->
-  <section id="page-stats" class="container" hidden>
-    <div class="card" style="--i:320ms">
-      <div class="card-h">📊 التحليلات</div>
+    <!-- تبويب الحضور -->
+    <div class="card" data-panel="attendance" style="--i:160ms">
+      <div class="card-h"><span class="title">تسجيل الحضور ✅</span></div>
       <div class="card-b">
-        <div class="toolbar">
-          <input id="dateFilter" type="date" class="input">
-          <button id="recalc" class="btn-ghost">إعادة الحساب</button>
+        <div style="display:flex;gap:10px;flex-wrap:wrap;align-items:center">
+          <input id="nameInput" class="input" placeholder="الاسم">
+          <input id="familyInput" class="input" placeholder="الأسرة">
+          <button id="addBtn" class="btn">إضافة</button>
+          <button id="clearBtn" class="btn-ghost">تفريغ</button>
         </div>
-        <div class="stats-bar">
-          <div class="stat-box"><h3>جلسات محفوظة</h3><div id="statSessions">0</div></div>
-          <div class="stat-box"><h3>حضور اليوم</h3><div id="statPresent">0</div></div>
-          <div class="stat-box"><h3>غياب اليوم</h3><div id="statAbsent">0</div></div>
-        </div>
-        <div class="stats-bar" id="groupRates"></div>
-        <div class="table-wrap">
-          <table>
-            <thead><tr><th>الاسم</th><th>مرات الحضور</th></tr></thead>
-            <tbody id="leaderboard"></tbody>
-          </table>
-        </div>
-        <p class="hint">الإحصائيات تعتمد على الجلسات التي يتم حفظها من صفحة الحضور.</p>
+        <div id="list"></div>
+      </div>
+    </div>
+
+    <!-- تبويب الإحصائيات -->
+    <div class="card" data-panel="stats" style="display:none; --i:240ms">
+      <div class="card-h"><span class="title">إحصائيات 📊</span></div>
+      <div class="card-b">
+        <p class="hint">هنا ملخص سريع…</p>
+        <div id="statsBox"></div>
       </div>
     </div>
   </section>
 
-  <!-- ===== فوتر ثابت ===== -->
+  <!-- ===== الفوتر الثابت لحقوق النشر ===== -->
   <footer class="site-footer">
-    جميع الحقوق محفوظة لخدمة شباب كنيسة العذراء مريم و البابا اثناسيوس الرسولي بمدينة نصر.©
+    جميع الحقوق محفوظة لخدمة شباب كنيسة العذراء مريم و البابا أثناسيوس الرسولي بمدينة نصر ©
   </footer>
 
-  <div id="toastArea" class="toast-area"></div>
-
-<script>
-(function(){
-  const $ = (id)=>document.getElementById(id);
-  const on=(el,ev,fn)=>el.addEventListener(ev,fn);
-  const escapeHtml=(s)=>String(s||'').replaceAll('&','&amp;').replaceAll('<','&lt;').replaceAll('>','&gt;');
-  const toastArea=$('toastArea');
-  function toast(msg,type='ok'){ const t=document.createElement('div'); t.className='toast '+type; t.textContent=msg; toastArea.appendChild(t); setTimeout(()=>{ t.style.opacity='0'; setTimeout(()=>t.remove(),400); },2800); }
-
-  /* ===== Sheets (كما هي) ===== */
-  const SHEETS={
-    f1b:{id:'1stXYnDRt6bhAnzsPmZI94j7S25tib4mi',edit:'https://docs.google.com/spreadsheets/d/1stXYnDRt6bhAnzsPmZI94j7S25tib4mi/edit',label:'Family 1 Boys'},
-    f1g:{id:'1RC1KXwGJWfRDEfrDJaDymoSOoEstnxXP',edit:'https://docs.google.com/spreadsheets/d/1RC1KXwGJWfRDEfrDJaDymoSOoEstnxXP/edit',label:'Family 1 Girls'},
-    f2b:{id:'1CsoAWsz_TrLKbpVdcAljJ0IvWGaDYfJL',edit:'https://docs.google.com/spreadsheets/d/1CsoAWsz_TrLKbpVdcAljJ0IvWGaDYfJL/edit',label:'Family 2 Boys'},
-    f2g:{id:'1qUsRqsDiDRBZJTNOsGCH4ZBR9s5At2fa',edit:'https://docs.google.com/spreadsheets/d/1qUsRqsDiDRBZJTNOsGCH4ZBR9s5At2fa/edit',label:'Family 2 Girls'},
-    f3b:{id:'1NJT8UzKL8NNqYiC90xBnT4rHyy-FtfYi',edit:'https://docs.google.com/spreadsheets/d/1NJT8UzKL8NNqYiC90xBnT4rHyy-FtfYi/edit',label:'Family 3 Boys'},
-    f3g:{id:'1H4Okxhz7mvqhqp9GzviqtwXryDOGtme6',edit:'https://docs.google.com/spreadsheets/d/1H4Okxhz7mvqhqp9GzviqtwXryDOGtme6/edit',label:'Family 3 Girls'},
-    f4b:{id:'1wrxZMP7rNKRTT6KZHpMKSqyDvNeVRFtm',edit:'https://docs.google.com/spreadsheets/d/1wrxZMP7rNKRTT6KZHpMKSqyDvNeVRFtm/edit',label:'Family 4 Boys'},
-    f4g:{id:'1_QN8G0X3Td_uw2HwT38zBsqmfhDto58s',edit:'https://docs.google.com/spreadsheets/d/1_QN8G0X3Td_uw2HwT38zBsqmfhDto58s/edit',label:'Family 4 Girls'}
-  };
-  const ATTENDANCE_WRITE_URL = 'https://script.google.com/macros/s/AKfycbynMcQb5X4aitbYRT6BeMcH4X7XyJpyagUKp_oHChU/exec';
-  const DRIVE_FOLDER_ID = '1HNCjBUhPcAzNfU-omkd8KqF5Zf8gCWTP';
-
-  const USERS=[{user:'admin',mobile:'1234'},{user:'admin1',mobile:'1234'}];
-  const VERSES=[
-    'كل ما فعلتموه بأحد إخوتي الأصاغر فبي فعلتم (مت 25:40)',
-    'اثبتوا فيّ وأنا فيكم (يو 15:4)',
-    'اذهبوا وتلمذوا جميع الأمم (مت 28:19)'
-  ];
-
-  /* ===== Logo + Cover (raw GitHub + fallback) ===== */
-  const logo=$('logoImg');
-  const coverImg=$('coverImg');
-  const logoCandidates=[
-    'https://raw.githubusercontent.com/Minakhairat/Youth.github.io/7a5b81012d3dde0fc4d0f53acd35c67c75502670/IMG-20250908-WA0008.jpg',
-    'https://raw.githubusercontent.com/Minakhairat/Youth.github.io/main/IMG-20250908-WA0008.jpg'
-  ];
-  function setFallback(){
-    const svg = `
-      <svg xmlns="http://www.w3.org/2000/svg" width="800" height="400">
-        <defs><linearGradient id="g" x1="0" x2="1" y1="0" y2="0"><stop offset="0%" stop-color="#1b335f"/><stop offset="100%" stop-color="#e5c558"/></linearGradient></defs>
-        <rect width="800" height="400" fill="#0b0f1a"/><circle cx="260" cy="200" r="160" fill="url(#g)" opacity="0.12"/>
-      </svg>`;
-    const data='data:image/svg+xml;utf8,'+encodeURIComponent(svg);
-    logo.src=data; coverImg.src=data;
-  }
-  (function setNextLogo(ix=0){
-    if(ix>=logoCandidates.length){ setFallback(); return; }
-    const url=logoCandidates[ix]; const test=new Image();
-    test.onload=()=>{ logo.src=url; coverImg.src=url; };
-    test.onerror=()=>setNextLogo(ix+1);
-    test.src=url;
-  })();
-
-  // Theme
-  const themeBtn=$('themeBtn');
-  function setTheme(mode){
-    document.documentElement.dataset.theme=mode;
-    themeBtn.textContent = mode==='dark' ? '☀️ Light' : '🌙 Dark';
-    localStorage.setItem('theme',mode);
-  }
-  on(themeBtn,'click',()=>{ const cur=document.documentElement.dataset.theme||'light'; setTheme(cur==='dark'?'light':'dark'); });
-  setTheme(localStorage.getItem('theme')||'light');
-
-  /* ===== التنقل بين الصفحات والوظائف كما هي ===== */
-  const LOGGED_KEY='loggedUser';
-  const logoutBtn=$('logoutBtn');
-  function showPage(id){
-    document.querySelectorAll('section.container').forEach(s=>s.hidden=true);
-    $(id).hidden=false;
-    document.querySelectorAll('.nav button').forEach(b=>b.classList.remove('active'));
-    const navBtn=document.getElementById('nav-'+id.split('-')[1]); if(navBtn) navBtn.classList.add('active');
-  }
-  function isLogged(){ return !!(localStorage.getItem(LOGGED_KEY) || sessionStorage.getItem(LOGGED_KEY)); }
-  function setLogged(user,remember){ if(remember){ localStorage.setItem(LOGGED_KEY, JSON.stringify(user)); } else { sessionStorage.setItem(LOGGED_KEY, JSON.stringify(user)); } toggleLogout(); }
-  function clearLogged(){ localStorage.removeItem(LOGGED_KEY); sessionStorage.removeItem(LOGGED_KEY); toggleLogout(); }
-  function toggleLogout(){ logoutBtn.style.display = isLogged()? 'inline-block':'none'; }
-  on(logoutBtn,'click',()=>{ clearLogged(); toast('تم تسجيل الخروج','ok'); showPage('page-login'); });
-
-  on($('nav-login'),'click',()=>showPage('page-login'));
-  on($('nav-data'),'click',()=>guard(()=>{ showPage('page-data'); ensureData(true); }));
-  on($('nav-att'),'click',()=>guard(()=>{ showPage('page-att'); ensureData(false).then(buildAttendanceUI); }));
-  on($('nav-stats'),'click',()=>guard(()=>{ showPage('page-stats'); recalcStats(); }));
-
-  on($('loginBtn'),'click',()=>{
-    const u=$('loginUser').value.trim(); const m=$('loginMobile').value.trim(); const remember=$('rememberMe').checked;
-    const ok=USERS.find(x=>x.user===u&&x.mobile===m);
-    if(!ok){ $('loginMsg').textContent='❌ بيانات خاطئة'; toast('بيانات الدخول غير صحيحة','err'); return; }
-    setLogged(ok,remember);
-    $('welcomeName').textContent='مرحبًا، '+u+' 👋';
-    $('welcomeVerse').textContent=VERSES[Math.floor(Math.random()*VERSES.length)];
-    $('loginMsg').textContent='';
-    toast('تم تسجيل الدخول بنجاح','ok');
-    showPage('page-welcome');
-    setTimeout(()=>{ showPage('page-data'); ensureData(true); },1000);
-  });
-
-  if(isLogged()){ toggleLogout(); showPage('page-data'); ensureData(true); } else { showPage('page-login'); }
-  function guard(fn){ if(!isLogged()){ toast('من فضلك سجّل الدخول أولًا','warn'); showPage('page-login'); return; } fn(); }
-
-  function fillGroups(){
-    const opts=Object.entries(SHEETS).map(([k,v])=>`<option value="${k}">${v.label}</option>`).join('');
-    $('groupSelect').innerHTML=opts; $('attGroup').innerHTML=opts;
-  }
-  fillGroups();
-
-  const cache={}; let activeGroup='f1b';
-  const csvUrl=(id)=>`https://docs.google.com/spreadsheets/d/${id}/export?format=csv`;
-  on($('groupSelect'),'change',()=>{ activeGroup=$('groupSelect').value; ensureData(true); });
-  on($('refreshBtn'),'click',()=>{ delete cache[activeGroup]; ensureData(true); });
-  on($('openSheetBtn'),'click',()=> window.open(SHEETS[activeGroup].edit,'_blank'));
-  on($('exportAllBtn'),'click',exportAllCSV_UTF8);
-  on($('searchInput'),'input',()=>{
-    const base=cache[activeGroup]||[];
-    const q=$('searchInput').value.trim().toLowerCase();
-    if(!q) return renderTable(base);
-    const f=base.filter(r=> Object.values(r).some(v=> String(v).toLowerCase().includes(q)));
-    renderTable(f,true);
-  });
-
-  const MAP={
-    name:['name','الاسم','اسم','full name','student','إسم'],
-    family:['family','رقم الأسرة','group','رقم الاسرة'],
-    mobile:['mob1','mobile','phone','tel','رقم الموبايل','موبايل','تليفون'],
-    father:['أب الاعتراف','اب الاعتراف','confession father','father of confession'],
-    photo:['photo','image','avatar','صورة'],
-    addressMulti:['address','العنوان','address1','address 1','address2','address 2','street','شارع','city','مدينة','area','حي','region','محافظة'],
-    fun:['fun fact','fun','facts','Fun Fact'],
-    notes:['notes','ملاحظات','remarks']
-  };
-  function pick(headers, keys){ keys = keys.map(k=>String(k).toLowerCase()); return headers.find(h=> keys.includes(String(h).toLowerCase()))||null; }
-
-  function parseCSV(csv){
-    const rows=[]; let cur='',row=[],q=false;
-    for(let i=0;i<csv.length;i++){
-      const c=csv[i],n=csv[i+1];
-      if(c==='\"'){ if(q&&n==='\"'){ cur+='\"'; i++; } else q=!q; }
-      else if(c===','&&!q){ row.push(cur); cur=''; }
-      else if((c==='\n'||c==='\r')&&!q){ if(cur!==''||row.length){ row.push(cur); rows.push(row); row=[]; cur=''; } }
-      else cur+=c;
-    }
-    if(cur!==''||row.length){ row.push(cur); rows.push(row); }
-    const headers=(rows[0]||[]).map(h=>h.trim());
-    const data=rows.slice(1).filter(r=>r.some(x=>String(x).trim()!==''))
-      .map(r=>Object.fromEntries(headers.map((h,i)=>[h,(r[i]||'').trim()])));
-    return {headers,rows:data};
-  }
-
-  async function ensureData(render){
-    if(cache[activeGroup]){ if(render) renderTable(cache[activeGroup],false); return; }
-    await loadSheet(activeGroup); if(render) renderTable(cache[activeGroup],false);
-  }
-
-  async function loadSheet(key){
-    try{
-      $('dataError').style.display='none';
-      const res=await fetch(csvUrl(SHEETS[key].id));
-      if(!res.ok) throw new Error('تعذّر جلب البيانات. تأكد أن الشيت Public (Anyone with the link → Viewer).');
-      const text=await res.text();
-      const ds=parseCSV(text);
-      cache[key]=normalize(ds,key);
-      toast('تم تحميل '+SHEETS[key].label,'ok');
-      renderTopStats();
-    } catch(e){
-      $('tbody').innerHTML='';
-      $('dataError').style.display='block';
-      $('dataError').innerHTML = '⚠️ '+escapeHtml(e.message);
-      toast('خطأ في تحميل البيانات','err');
-    }
-  }
-
-  function normalize(ds,key){
-    const h=ds.headers; const get=(obj, col)=> col? (obj[col]||'') : '';
-    const addrCols = h.filter(x=> MAP.addressMulti.map(a=>a.toLowerCase()).includes(String(x).toLowerCase()));
-    const rows = ds.rows.map(r=>{
-      const nameCol=pick(h,MAP.name), famCol=pick(h,MAP.family), mobCol=pick(h,MAP.mobile), fathCol=pick(h,MAP.father), photoCol=pick(h,MAP.photo), notesCol=pick(h,MAP.notes);
-      const address = addrCols.map(c=>r[c]).filter(Boolean).join(' — ');
-      return {
-        name:get(r,nameCol),
-        family:get(r,famCol)||SHEETS[key].label,
-        mobile:get(r,mobCol),
-        father:get(r,fathCol),
-        photo:toImg(get(r,photoCol)),
-        address:address,
-        fun:'',
-        notes:get(r,notesCol)
-      };
+  <script>
+    // ثيم
+    const root = document.documentElement;
+    const themeBtn = document.getElementById('themeBtn');
+    const prefersDark = matchMedia('(prefers-color-scheme: dark)').matches;
+    if (prefersDark) root.setAttribute('data-theme','dark');
+    themeBtn.addEventListener('click', () => {
+      const isDark = root.getAttribute('data-theme') === 'dark';
+      root.setAttribute('data-theme', isDark ? 'light' : 'dark');
+      themeBtn.textContent = isDark ? '🌙 Dark' : '☀️ Light';
     });
-    return rows;
-  }
 
-  function toImg(val){ const s=String(val||'').trim(); if(!s) return ''; if(/^https?:\/\//.test(s)) return s; const m=s.match(/[\-\w]{25,}/); return m?`https://drive.google.com/uc?export=download&id=${m[0]}`:''; }
-  function telLink(raw){ const digits=String(raw||'').replace(/[^\d+]/g,''); return digits? `<a class="tel" href="tel:${digits}">${escapeHtml(raw)}</a>` : (escapeHtml(raw)||'—'); }
+    // صور الكفر واللوجو (بدون أي نص على الكفر)
+    document.getElementById('coverImg').src = 'cover.jpg'; // عدّل المسار لو حابب
+    document.getElementById('logoImg').src  = 'logo.jpg';  // عدّل المسار لو حابب
 
-  /* ==== واتساب ==== */
-  function cleanPhone(raw){
-    const s = String(raw||'').trim();
-    if(!s) return '';
-    let d = s.replace(/[^\d+]/g,'');
-    if(d.startsWith('+')) d = d.slice(1);
-    if(/^0\d{10}$/.test(d)) d = '20' + d.slice(1); // مصر
-    return d;
-  }
-  function waLink(raw){ const d = cleanPhone(raw); return d ? `https://wa.me/${d}` : ''; }
-  function waSvg(){
-    return `<svg class="wa-ic" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16" aria-hidden="true">
-      <path fill="currentColor" d="M13.601 2.326A7.892 7.892 0 0 0 8.002 0C3.584 0 .003 3.58.003 7.998c0 1.411.37 2.787 1.073 4.005L0 16l4.107-1.06a7.979 7.979 0 0 0 3.895 1.006h.003c4.418 0 7.998-3.58 7.998-7.998a7.934 7.934 0 0 0-2.402-5.622ZM8.002 14.5h-.003a6.5 6.5 0 0 1-3.316-.91l-.237-.141-2.435.628.65-2.374-.154-.243A6.492 6.492 0 0 1 1.503 8c0-3.586 2.913-6.5 6.499-6.5 1.736 0 3.366.676 4.593 1.903a6.45 6.45 0 0 1 1.903 4.595c0 3.586-2.914 6.502-6.496 6.502Zm3.67-4.875c-.2-.1-1.18-.58-1.363-.646-.182-.068-.315-.1-.448.1-.133.199-.514.646-.63.779-.116.134-.233.15-.433.05-.2-.1-.843-.31-1.606-.99-.593-.53-.993-1.18-1.11-1.377-.116-.2-.013-.307.087-.406.089-.088.2-.229.3-.343.1-.115.133-.2.2-.332.067-.134.033-.25-.017-.35-.05-.1-.448-1.08-.614-1.48-.16-.39-.328-.337-.448-.343-.115-.006-.25-.007-.383-.007a.74.74 0 0 0-.533.25c-.183.2-.7.684-.7 1.67 0 .984.717 1.93.817 2.066.1.135 1.41 2.153 3.417 3.018.478.206.85.33 1.14.423.48.154.917.132 1.262.08.385-.058 1.18-.482 1.35-.95.167-.469.167-.87.117-.95-.05-.083-.183-.133-.383-.233Z"/>
-    </svg>`;
-  }
-
-  function renderTable(rows){
-    const body=$('tbody');
-    body.innerHTML=(rows||[]).map((r,i)=>`<tr style="--i:${i*40}ms">
-      <td data-label="الاسم">${escapeHtml(r.name)||'—'}</td>
-      <td data-label="الأسرة">${escapeHtml(r.family)||'—'}</td>
-      <td data-label="الموبايل">
-        <div class="tel-wrap">
-          ${telLink(r.mobile)}
-          ${waLink(r.mobile) ? `<a class="wa-btn" target="_blank" rel="noopener" href="${waLink(r.mobile)}">${waSvg()} واتساب</a>` : ''}
-        </div>
-      </td>
-      <td data-label="أب الاعتراف">${escapeHtml(r.father)||'—'}</td>
-      <td data-label="صورة">${r.photo?`<img class="avatar" src="${escapeHtml(r.photo)}">`:'—'}</td>
-      <td data-label="العنوان">${escapeHtml(r.address)||'—'}</td>
-      <td data-label="Fun Fact">${escapeHtml(r.fun)||'—'}</td>
-      <td data-label="ملاحظات">${escapeHtml(r.notes)||'—'}</td>
-    </tr>`).join('') || `<tr><td colspan="8" class="hint">لا توجد بيانات</td></tr>`;
-    renderTopStats();
-  }
-
-  function renderTopStats(){
-    const bar=$('topStats'); const totals={}; let sum=0;
-    for(const k in SHEETS){ const n=(cache[k]?.length||0); totals[k]=n; sum+=n; }
-    const boxes = [`<div class="stat-box"><h3>الإجمالي</h3><div>${sum}</div></div>`]
-      .concat(Object.keys(SHEETS).map(k=>`<div class="stat-box"><h3>${SHEETS[k].label}</h3><div>${totals[k]||0}</div></div>`));
-    bar.innerHTML=boxes.join('');
-  }
-
-  // CSV UTF8 + BOM
-  function exportAllCSV_UTF8(){
-    const all = Object.keys(SHEETS).flatMap(k=> (cache[k]||[]).map(r=>({...r,group:SHEETS[k].label})) );
-    if(!all.length){ toast('لا يوجد بيانات للتصدير','warn'); return; }
-    const headers=['name','family','mobile','father','photo','address','fun','notes','group'];
-    const rows=[headers].concat(all.map(r=> headers.map(h=> String(r[h]||'').replaceAll('"','""'))));
-    const csv=rows.map(r=> r.map(x=> x.includes(',')? '"'+x+'"':x).join(',')).join('\n');
-    const BOM='\uFEFF';
-    const blob=new Blob([BOM,csv],{type:'text/csv;charset=utf-8'});
-    const a=document.createElement('a'); a.href=URL.createObjectURL(blob); a.download='all_data.csv'; a.click(); URL.revokeObjectURL(a.href);
-    toast('تم تصدير CSV بترميز UTF-8','ok');
-  }
-
-  // Attendance
-  const SESS_KEY='attendance_sessions_v6';
-  function getSessions(){ return JSON.parse(localStorage.getItem(SESS_KEY)||'[]'); }
-  function setSessions(v){ localStorage.setItem(SESS_KEY, JSON.stringify(v)); }
-  function selKeyFor(group){ return 'att_selected_'+group; }
-  function readSel(group){ return new Set(JSON.parse(sessionStorage.getItem(selKeyFor(group))||'[]')); }
-  function writeSel(group,set){ sessionStorage.setItem(selKeyFor(group), JSON.stringify([...set])); }
-
-  on($('attGroup'),'change',()=>{ activeGroup=$('attGroup').value; ensureData(false).then(buildAttendanceUI); });
-  on($('markAll'),'click',()=>{ document.querySelectorAll('#attRoster input[type="checkbox"]').forEach(c=>{ if(!c.checked){ c.checked=true; togglePresent(c); } }); });
-  on($('clearAll'),'click',()=>{ document.querySelectorAll('#attRoster input[type="checkbox"]').forEach(c=>{ if(c.checked){ c.checked=false; togglePresent(c); } }); });
-  on($('attSearch'),'change',()=>{ const name=$('attSearch').value.trim(); if(!name) return; const box=[...document.querySelectorAll('#attRoster input')].find(c=>c.dataset.name===name); if(box && !box.checked){ box.checked=true; togglePresent(box); } $('attSearch').value=''; });
-
-  on($('saveLocal'),'click',saveLocalOnly);
-  on($('downloadCsv'),'click',downloadCsvOnly);
-  on($('uploadDrive'),'click',uploadDriveOnly);
-
-  async function buildAttendanceUI(){
-    await ensureData(false);
-    const list=cache[activeGroup]||[]; const names=list.map(r=>r.name).filter(Boolean);
-    const selected=readSel(activeGroup);
-    $('attRoster').innerHTML= names.map(n=>`<tr><td>${escapeHtml(n)}</td><td><input type="checkbox" data-name="${escapeHtml(n)}" ${selected.has(n)?'checked':''}></td></tr>`).join('') || '<tr><td colspan="2" class="hint">لا توجد أسماء</td></tr>';
-    $('attSuggest').innerHTML = names.map(n=>`<option value="${escapeHtml(n)}"></option>`).join('');
-    $('attToday').innerHTML='';
-    selected.forEach(n=>{
-      const tr=document.createElement('tr'); tr.innerHTML=`<td>${escapeHtml(n)}</td><td>${new Date().toLocaleTimeString('ar-EG')}</td>`;
-      $('attToday').appendChild(tr);
+    // تبديل التبويبات
+    const nav = document.querySelector('.nav');
+    const panels = [...document.querySelectorAll('[data-panel]')];
+    nav.addEventListener('click', (e)=>{
+      if(e.target.tagName!=='BUTTON') return;
+      nav.querySelectorAll('button').forEach(b=>b.classList.remove('active'));
+      e.target.classList.add('active');
+      const tab = e.target.dataset.tab;
+      panels.forEach(p => p.style.display = (p.dataset.panel===tab?'':'none'));
     });
-    updateAttCount();
-    document.querySelectorAll('#attRoster input[type="checkbox"]').forEach(box=> box.addEventListener('change',()=>togglePresent(box)));
-  }
 
-  function togglePresent(box){
-    const name=box.dataset.name;
-    const selected=readSel(activeGroup);
-    if(box.checked){
-      selected.add(name);
-      const time=new Date().toLocaleTimeString('ar-EG');
-      const tr=document.createElement('tr'); tr.innerHTML=`<td>${escapeHtml(name)}</td><td>${time}</td>`;
-      $('attToday').appendChild(tr);
-    } else {
-      selected.delete(name);
-      [...document.querySelectorAll('#attToday tr')].forEach(tr=>{ if(tr.firstChild && tr.firstChild.textContent===name){ tr.remove(); } });
-    }
-    writeSel(activeGroup,selected);
-    updateAttCount();
-  }
-  function updateAttCount(){ const c=document.querySelectorAll('#attToday tr').length; $('attCountHint').textContent=c+' مختارين'; }
+    // أمثلة عمليات بسيطة
+    const list = document.getElementById('list');
+    document.getElementById('addBtn').onclick = ()=>{
+      const name = (document.getElementById('nameInput').value||'').trim();
+      const fam  = (document.getElementById('familyInput').value||'').trim();
+      if(!name) return;
+      const item = document.createElement('div');
+      item.className = 'stat';
+      item.innerHTML = `<b>${name}</b> <i>${fam||''}</i>`;
+      list.prepend(item);
+    };
+    document.getElementById('clearBtn').onclick = ()=>{ list.innerHTML=''; };
 
-  function collectAttendance(){
-    const names = Array.from(document.querySelectorAll('#attRoster input')).map(c=>c.dataset.name);
-    const present = Array.from(document.querySelectorAll('#attToday tr')).map(tr=> tr.firstChild.textContent);
-    const setP=new Set(present);
-    const when=new Date().toISOString();
-    const rows=[["when","group","name","status"]];
-    names.forEach(n=> rows.push([when, SHEETS[activeGroup].label, n, setP.has(n)?'Present':'Absent']));
-    return {when,names,present,setP,rows};
-  }
-
-  function saveLocalOnly(){
-    const {when,names,present}=collectAttendance();
-    const entry={id:cryptoRand(),when,group:activeGroup,label:SHEETS[activeGroup].label,present,total:names.length};
-    const list=getSessions(); list.unshift(entry); setSessions(list);
-    toast('تم الحفظ محليًا للجلسة','ok');
-  }
-
-  function downloadCsvOnly(){
-    const {rows,when}=collectAttendance();
-    const csv=rows.map(r=>r.join(',')).join('\n');
-    const BOM='\uFEFF';
-    const blob=new Blob([BOM,csv],{type:'text/csv;charset=utf-8'});
-    const a=document.createElement('a'); a.href=URL.createObjectURL(blob); a.download=`attendance_${activeGroup}_${when.slice(0,10)}.csv`; a.click(); URL.revokeObjectURL(a.href);
-    toast('تم تنزيل CSV','ok');
-  }
-
-  async function uploadDriveOnly(){
-    const {rows,when,names,setP}=collectAttendance();
-    const csv=rows.map(r=>r.join(',')).join('\n');
-
-    try{
-      await postToSheet_plain({
-        when, group:activeGroup, groupLabel:SHEETS[activeGroup].label,
-        folderId:DRIVE_FOLDER_ID,
-        fileName:`attendance_${activeGroup}_${when.slice(0,10)}.csv`,
-        csvText:csv,
-        records:names.map(n=>({name:n,status:setP.has(n)?'Present':'Absent'}))
+    // زرار تحديث وهمي
+    document.getElementById('refreshBtn').onclick = ()=>{
+      const t = document.getElementById('topStats');
+      t.innerHTML = '';
+      [['المسجلين', 42], ['حضور اليوم', 18], ['غياب', 24]].forEach(([k,v])=>{
+        const s = document.createElement('div'); s.className='stat'; s.innerHTML = `<b>${v}</b><i>${k}</i>`;
+        t.appendChild(s);
       });
-      toast('تم رفع CSV إلى Drive','ok');
-      return;
-    }catch(e1){
-      try{
-        await postToSheet_form({
-          when, group:activeGroup, groupLabel:SHEETS[activeGroup].label,
-          folderId:DRIVE_FOLDER_ID,
-          fileName:`attendance_${activeGroup}_${when.slice(0,10)}.csv`,
-          csvText:csv,
-          records:names.map(n=>({name:n,status:setP.has(n)?'Present':'Absent'}))
-        });
-        toast('تم الرفع (طريقة احتياطية)','ok');
-        return;
-      }catch(e2){
-        const isFile = location.protocol==='file:';
-        const msg = isFile ? 'افتح الصفحة عبر http:// بدل file://.' : 'تحقق من نشر Web App بصلاحية Anyone ومنح إذن Drive (واعمل Authorize أول مرة).';
-        toast('فشل الرفع','warn'); toast(msg,'warn');
-      }
-    }
-  }
-
-  // بدون Preflight
-  async function postToSheet_plain(payload){
-    const controller = new AbortController(); const t=setTimeout(()=>controller.abort(),20000);
-    const r = await fetch(ATTENDANCE_WRITE_URL+`?origin=${encodeURIComponent(location.origin)}`,{
-      method:'POST', headers:{'Content-Type':'text/plain;charset=utf-8'},
-      body: JSON.stringify(payload), signal:controller.signal, redirect:'follow', referrerPolicy:'no-referrer'
-    });
-    clearTimeout(t);
-    const txt=await r.text().catch(()=> '');
-    if(!r.ok || !(/^OK/i).test((txt||'').trim() || 'OK')){ throw new Error(`HTTP ${r.status}`); }
-    return txt;
-  }
-  // احتياطي
-  async function postToSheet_form(payload){
-    const body = new URLSearchParams({payload: JSON.stringify(payload)}).toString();
-    const controller = new AbortController(); const t=setTimeout(()=>controller.abort(),20000);
-    const r = await fetch(ATTENDANCE_WRITE_URL,{
-      method:'POST', headers:{'Content-Type':'application/x-www-form-urlencoded;charset=utf-8'},
-      body, signal:controller.signal, redirect:'follow', referrerPolicy:'no-referrer'
-    });
-    clearTimeout(t);
-    const txt=await r.text().catch(()=> '');
-    if(!r.ok || !(/^OK/i).test((txt||'').trim() || 'OK')){ throw new Error(`HTTP ${r.status}`); }
-    return txt;
-  }
-
-  // Analytics
-  on($('recalc'),'click',recalcStats);
-  function recalcStats(){
-    const list=JSON.parse(localStorage.getItem('attendance_sessions_v6')||'[]');
-    $('statSessions').textContent=list.length;
-    const selDate = $('dateFilter').value? new Date($('dateFilter').value) : new Date();
-    const dayKey=(d)=>`${d.getFullYear()}-${d.getMonth()}-${d.getDate()}`;
-    const targetKey=dayKey(selDate);
-    const isSameDay=(iso)=> dayKey(new Date(iso))===targetKey;
-
-    const day=list.filter(e=> isSameDay(e.when));
-    const pres=day.reduce((s,e)=>s+e.present.length,0);
-    const total=day.reduce((s,e)=>s+e.total,0);
-    $('statPresent').textContent=pres; $('statAbsent').textContent=Math.max(total-pres,0);
-
-    const byGroup={};
-    day.forEach(e=>{
-      if(!byGroup[e.group]) byGroup[e.group]={p:0,t:0,label:e.label};
-      byGroup[e.group].p += e.present.length;
-      byGroup[e.group].t += e.total;
-    });
-    $('groupRates').innerHTML = Object.entries(SHEETS).map(([k,v])=>{
-      const g=byGroup[k]||{p:0,t:0,label:v.label};
-      const rate=g.t? Math.round(100*g.p/g.t) : 0;
-      return `<div class="stat-box"><h3>${v.label}</h3><div>${rate}%</div></div>`;
-    }).join('');
-
-    const counts={};
-    list.forEach(s=> s.present.forEach(n=> counts[n]=(counts[n]||0)+1));
-    const rows=Object.entries(counts).sort((a,b)=>b[1]-a[1]).slice(0,200)
-      .map(([n,c])=>`<tr><td>${escapeHtml(n)}</td><td>${c}</td></tr>`).join('')
-      || '<tr><td colspan="2" class="hint">لا توجد بيانات حضور كافية بعد</td></tr>';
-    $('leaderboard').innerHTML=rows;
-    toast('تم تحديث التحليلات','ok');
-  }
-
-  function cryptoRand(){ const a=new Uint32Array(2); crypto.getRandomValues(a); return a.join('-'); }
-
-  if(location.protocol==='file:'){ toast('افتح عبر http:// لتفادي قيود المتصفح','warn'); }
-})();
-</script>
+    };
+  </script>
 </body>
 </html>
-
-
-
-
-
-
-
