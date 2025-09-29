@@ -127,7 +127,6 @@
         border:1px solid #0002; border-radius:12px;
         padding:12px; background:var(--card);
       }
-      /* ترتيب الأعمدة حسب الجدول الحالي (5=صورة) */
       tbody td:nth-child(5){ grid-area: photo; justify-self:center; }
       tbody td:nth-child(1){ grid-area: name; }
       tbody td:nth-child(2){ grid-area: family; }
@@ -136,9 +135,8 @@
       tbody td:nth-child(6){ grid-area: address; }
       tbody td:nth-child(7){ grid-area: fun; }
       tbody td:nth-child(8){ grid-area: notes; }
-      /* عنوان الحقل فوق كل قيمة */
       tbody td::before{content:attr(data-label) ' : ';font-weight:900;color:var(--muted);display:block;margin-bottom:2px}
-      tbody td:nth-child(5)::before{content:'';display:none} /* لا عنوان للصورة */
+      tbody td:nth-child(5)::before{content:'';display:none}
       td{padding:6px 0}
     }
 
@@ -162,7 +160,6 @@
       border-top:1px solid #0002; z-index:40; font-size:13px; text-align:center;
     }
 
-    /* Animations */
     @keyframes fadeUp { from {opacity:0; transform: translateY(8px)} to {opacity:1; transform:none} }
     @keyframes pop { 0% {transform:scale(.9); opacity:0} 60% {transform:scale(1.03)} 100% {transform:scale(1); opacity:1} }
     @keyframes shimmer { 0%{background-position:0 0} 100%{background-position:200% 0} }
@@ -438,7 +435,6 @@
   const SHEET_CACHE={}; let activeGroup='f1b';
   const csvUrl=(id)=>`https://docs.google.com/spreadsheets/d/${id}/export?format=csv`;
 
-  /* خريطة الأعمدة (أضفنا image بجميع التهجئات) */
   const MAP={
     name:['name','الاسم','اسم','full name','student','إسم'],
     family:['family','رقم الأسرة','group','رقم الاسرة'],
@@ -451,32 +447,49 @@
   };
   const pick=(headers,keys)=> headers.find(h=> keys.map(k=>String(k).toLowerCase()).includes(String(h).toLowerCase()))||null;
 
-  /* === أهم تعديل: تحويل قيمة الصورة لرابط مباشر صالح للـ <img> === */
+  /* === تحويل قيمة الصورة لرابط مباشر + دعم IMAGE() === */
   function toImg(val){
-    const s = String(val||'').trim();
+    let s = String(val||'').trim();
     if(!s) return '';
 
-    // لو الخلية فيها أكتر من نص/لينك ناخد أول واحد
+    // =IMAGE("url")
+    const imgFx = s.match(/^=\s*IMAGE\s*\(\s*["']([^"']+)["']/i);
+    if (imgFx && imgFx[1]) s = imgFx[1].trim();
+
     const first = s.split(/\s+/)[0];
 
-    // مجرد ID فقط
+    // ID فقط (Google Drive)
     const idOnly = first.match(/^[\w-]{25,}$/);
     if(idOnly) return `https://drive.google.com/uc?export=view&id=${idOnly[0]}`;
 
-    // كل صيغ روابط Google Drive المعروفة
-    const idFromDrive =
+    // صيغ Google Drive المختلفة
+    const m =
       first.match(/\/file\/d\/([\w-]{25,})/) ||
       first.match(/[?&]id=([\w-]{25,})/)     ||
       first.match(/\/uc\?id=([\w-]{25,})/);
-    if(idFromDrive) return `https://drive.google.com/uc?export=view&id=${idFromDrive[1]}`;
+    if(m) return `https://drive.google.com/uc?export=view&id=${m[1]}`;
+
+    // روابط Google Photos المشاركة لا تعمل مباشرة
+    if(/photos\.app\.goo\.gl|photos\.google\.com/i.test(first)) return '';
 
     // Dropbox → raw
-    if(/dropbox\.com/.test(first)) return first.replace(/\?dl=0$/, '?raw=1').replace(/\?dl=1$/, '?raw=1');
+    if(/dropbox\.com/i.test(first)) return first.replace(/\?dl=0$/i,'?raw=1').replace(/\?dl=1$/i,'?raw=1');
 
-    // أي رابط http(s) تاني
+    // http(s) مباشر
     if(/^https?:\/\//i.test(first)) return first;
 
     return '';
+  }
+
+  // استخراج ID من أي رابط/صيغة Drive (لاستخدام thumbnail عند الفشل)
+  function driveIdFromUrl(u){
+    if(!u) return '';
+    const m =
+      String(u).match(/[?&]id=([\w-]{25,})/) ||
+      String(u).match(/\/file\/d\/([\w-]{25,})/) ||
+      String(u).match(/\/uc\?id=([\w-]{25,})/) ||
+      String(u).match(/export=view&id=([\w-]{25,})/);
+    return m ? m[1] : '';
   }
 
   function telLink(raw){ const digits=String(raw||'').replace(/[^\d+]/g,''); return digits? `<a class="tel" href="tel:${digits}">${escapeHtml(raw)}</a>` : (escapeHtml(raw)||'—'); }
@@ -518,7 +531,7 @@
         family:get(r,famCol)||SHEETS[key].label,
         mobile:get(r,mobCol),
         father:get(r,fathCol),
-        photo:toImg(get(r,photoCol)),   // ← استخدام الدالة الجديدة
+        photo:toImg(get(r,photoCol)),
         address:address,
         fun:'',
         notes:get(r,notesCol)
@@ -573,14 +586,39 @@
       <td data-label="أب الاعتراف">${escapeHtml(r.father)||'—'}</td>
       <td data-label="صورة">${
         r.photo
-          ? `<img class="avatar" src="${escapeHtml(r.photo)}" alt="">`
+          ? `<img class="avatar" loading="lazy" decoding="async" referrerpolicy="no-referrer"
+                  src="${escapeHtml(r.photo)}"
+                  data-name="${escapeHtml(r.name||'')}"
+                  data-gid="${escapeHtml(driveIdFromUrl(r.photo))}" />`
           : initialsAvatar(r.name)
       }</td>
       <td data-label="العنوان">${escapeHtml(r.address)||'—'}</td>
       <td data-label="Fun Fact">${escapeHtml(r.fun)||'—'}</td>
       <td data-label="ملاحظات">${escapeHtml(r.notes)||'—'}</td>
     </tr>`).join('') || `<tr><td colspan="8" class="hint">لا توجد بيانات</td></tr>`;
+
     renderTopStats();
+
+    // أي صورة تفشل → جرّب thumbnail ثم Initials
+    document.querySelectorAll('#tbody img.avatar').forEach(img=>{
+      let triedThumb = false;
+      img.addEventListener('error', ()=>{
+        if(!triedThumb){
+          const id = img.getAttribute('data-gid');
+          if(id){
+            triedThumb = true;
+            img.src = `https://drive.google.com/thumbnail?id=${id}&sz=w1024`;
+            return;
+          }
+        }
+        // fallback النهائي: Initials
+        const name = img.getAttribute('data-name') || '';
+        const div = document.createElement('div');
+        div.className = 'avatar--ph';
+        div.textContent = (name.trim().split(/\s+/).slice(0,2).map(s=>s[0]||'').join('') || 'NA').toUpperCase();
+        img.replaceWith(div);
+      });
+    });
   }
 
   /* ===== إحصائيات أعلى البيانات ===== */
@@ -757,10 +795,9 @@
   function cryptoRand(){ const a=new Uint32Array(2); crypto.getRandomValues(a); return a.join('-'); }
 
   /* إعدادات أولية للصور */
-  document.getElementById('coverImg').src = 'cover.jpg'; // غيّر المسار لو حبيت
+  document.getElementById('coverImg').src = 'cover.jpg';
   document.getElementById('logoImg').src  = document.getElementById('logoImg').src || 'logo.jpg';
 })();
 </script>
 </body>
 </html>
-
