@@ -244,10 +244,15 @@
     'اذهبوا وتلمذوا جميع الأمم (مت 28:19)'
   ];
 
-  /* ===== Logo (يستخدم لينكك + فولباك SVG) ===== */
+  /* ===== Logo (raw GitHub link بدل blob) ===== */
   const logo=$('logoImg');
   const logoCandidates=[
-    'https://github.com/Minakhairat/Youth.github.io/blob/7a5b81012d3dde0fc4d0f53acd35c67c75502670/IMG-20250908-WA0008.jpg' // اللينك اللي بعته
+    // 1) رابط مباشر لنفس الـ commit اللي بعته — مضمون
+    'https://raw.githubusercontent.com/Minakhairat/Youth.github.io/7a5b81012d3dde0fc4d0f53acd35c67c75502670/IMG-20250908-WA0008.jpg',
+    // 2) احتياطي: على فرع main لو غيرت commit بعدين
+    'https://raw.githubusercontent.com/Minakhairat/Youth.github.io/main/IMG-20250908-WA0008.jpg'
+    // // 3) لو عندك GitHub Pages:
+    // 'https://minakhairat.github.io/Youth.github.io/IMG-20250908-WA0008.jpg'
   ];
   (function setNextLogo(ix=0){
     if(ix>=logoCandidates.length){
@@ -658,5 +663,3 @@
 </script>
 </body>
 </html>
-
-
