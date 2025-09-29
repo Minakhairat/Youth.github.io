@@ -10,55 +10,62 @@
     :root{
       --primary:#1b335f; --accent:#e5c558; --bg:#f9f9fb; --card:#fff; --text:#111; --muted:#6b7280;
       --ok:#16a34a; --warn:#ca8a04; --danger:#dc2626;
-      /* الغلاف */
-      --cover-h: clamp(180px, 28vh, 280px);
-      --cover-grad: linear-gradient(180deg, #00000066 0%, #00000022 40%, transparent 70%);
-      --cover-border: #00000014;
-      /* الفوتر */
-      --footer-h: 46px;
+      --cover-h:220px;     /* ارتفاع الكفر المطلوب */
+      --footer-h:46px;     /* ارتفاع الفوتر الثابت */
+      --cover-border:#00000014;
+      --cover-grad: linear-gradient(180deg, #00000055 0%, #00000022 50%, transparent 100%);
     }
     :root[data-theme="dark"]{
       --bg:#0f1115; --card:#161a22; --text:#e7e7ea; --muted:#9aa3b2;
-      --cover-grad: linear-gradient(180deg, #0b0f1acc 0%, #0b0f1a66 45%, transparent 80%);
       --cover-border:#ffffff14;
+      --cover-grad: linear-gradient(180deg, #0b0f1acc 0%, #0b0f1a66 60%, transparent 100%);
     }
 
     *{box-sizing:border-box}
     body{
-      margin:0;
-      font-family:'Cairo',system-ui,Segoe UI,Roboto,Arial,sans-serif;
+      margin:0; font-family:'Cairo',system-ui,Segoe UI,Roboto,Arial,sans-serif;
       background:var(--bg); color:var(--text);
       transition:background .3s,color .3s;
-      padding-bottom: var(--footer-h); /* علشان الفوتر الثابت ما يغطيش المحتوى */
+      padding-bottom:var(--footer-h); /* علشان الفوتر الثابت ما يغطيش المحتوى */
     }
 
-    /* ======= الغلاف (Cover) ======= */
+    /* ===== الغلاف (Cover) بدون نص ===== */
     .cover{
-      position:relative; width:100%; height:var(--cover-h); overflow:hidden;
-      border-bottom:1px solid var(--cover-border);
-      background:#000;
+      position:relative; width:100%; height:var(--cover-h);
+      overflow:hidden; border-bottom:1px solid var(--cover-border); background:#000;
     }
     .cover__img{
-      position:absolute; inset:0;
-      width:100%; height:100%;
+      position:absolute; inset:0; width:100%; height:100%;
       object-fit:cover; object-position:center;
       filter:saturate(1.05) contrast(1.05);
     }
     .cover__overlay{ position:absolute; inset:0; background:var(--cover-grad); pointer-events:none; }
 
-    /* ======= الهيدر ======= */
+    /* ===== الهيدر: الأفاتار فوق والعنوان تحته سطر واحد ===== */
     header{
-      display:flex;align-items:center;justify-content:space-between;gap:12px;
-      padding:10px 16px;background:var(--card);border-bottom:1px solid #0002;position:sticky;top:0;z-index:10
+      display:flex; align-items:center; justify-content:space-between; gap:12px;
+      padding:10px 16px; background:var(--card); border-bottom:1px solid #0002;
+      position:sticky; top:0; z-index:10;
     }
-    .brand{display:flex;align-items:center;gap:12px}
+    .brand{
+      display:flex; flex-direction:column; align-items:center; gap:6px; text-align:center;
+    }
     .logo{
-      width:50px; height:50px; border-radius:12px;
-      border:2px solid var(--accent); object-fit:cover; background:#fff;
-      box-shadow:0 6px 16px #0002; animation:pop .6s ease;
+      width:90px; height:90px; border-radius:16px;
+      border:3px solid var(--accent); object-fit:cover; background:#fff;
+      box-shadow:0 6px 16px #0003; animation:pop .6s ease;
     }
+    .brand h1{
+      margin:0; font-size:22px; font-weight:900; line-height:1;
+      white-space:nowrap; overflow:hidden; text-overflow:ellipsis;
+      max-width:min(70vw,520px);  /* يخليها سطر واحد منسق */
+    }
+    .toolbar{display:flex;gap:8px;flex-wrap:wrap;align-items:center}
+    .btn{background:var(--primary);color:#fff;padding:10px 16px;border:none;border-radius:10px;font-weight:800;cursor:pointer}
+    .btn-ghost{background:transparent;border:1px dashed #0003;color:var(--text)}
+    .btn-danger{background:var(--danger);color:#fff}
 
-    /* ======= النافبار ======= */
+    /* ===== النافبار ===== */
     .nav{display:flex;gap:12px;justify-content:center;margin:12px;flex-wrap:wrap}
     .nav button{
       padding:10px 14px;border-radius:10px;border:1px solid #0002;background:var(--card);
@@ -67,19 +74,13 @@
     .nav button:hover{ transform: translateY(-2px); box-shadow:0 6px 14px #0003 }
     .nav button.active{background:var(--accent);color:#000}
 
-    /* ======= البطاقات والجداول ======= */
+    /* ===== بطاقات وجداول ===== */
     .container{padding:16px;max-width:1200px;margin:auto}
     .card{background:var(--card);border:1px solid #0002;border-radius:16px;box-shadow:0 6px 20px #0002;margin-bottom:20px;overflow:hidden; animation: fadeUp .5s ease var(--i,0ms) both}
     .card-h{padding:14px 20px;font-weight:900;background:linear-gradient(90deg,var(--primary),var(--accent));color:#000; -webkit-background-clip:text; -webkit-text-fill-color:transparent;}
     .card-h::before{content:'';display:block;height:3px;background:linear-gradient(90deg,var(--primary),var(--accent)); background-size:200% 100%; animation: shimmer 2.1s linear infinite}
     .card-b{padding:16px}
-    .btn{background:var(--primary);color:#fff;padding:10px 16px;border:none;border-radius:10px;font-weight:800;cursor:pointer}
-    .btn:hover{filter:brightness(1.05)}
-    .btn-outline{background:transparent;border:2px solid var(--primary);color:var(--primary)}
-    .btn-ghost{background:transparent;border:1px dashed #0003;color:var(--text)}
-    .btn-danger{background:var(--danger);color:#fff}
     .input{padding:10px;border:1px solid #0002;border-radius:10px;background:var(--card);color:var(--text)}
-    .toolbar{display:flex;gap:8px;flex-wrap:wrap;align-items:center}
     .hint{color:var(--muted);font-size:13px}
 
     .table-wrap{border:1px solid #0002;border-radius:12px;overflow:auto;max-height:60vh}
@@ -125,12 +126,12 @@
     .toast{background:var(--card);color:var(--text);border:1px solid #0002;padding:10px 14px;border-radius:10px;box-shadow:0 6px 20px #0004;min-width:240px;transition:opacity .3s}
     .toast.ok{border-color:var(--ok)} .toast.warn{border-color:var(--warn)} .toast.err{border-color:var(--danger)}
 
-    /* ======= فوتر ثابت ======= */
+    /* ===== فوتر ثابت ===== */
     footer.site-footer{
       position:fixed; inset-inline:0; bottom:0; height:var(--footer-h);
       display:flex; align-items:center; justify-content:center; gap:8px;
       padding:0 12px; background:var(--card); color:var(--muted);
-      border-top:1px solid #0002; z-index:40; font-size:13px;
+      border-top:1px solid #0002; z-index:40; font-size:13px; text-align:center;
     }
 
     /* Animations */
@@ -141,17 +142,17 @@
 </head>
 <body>
 
-  <!-- ======= الغلاف ======= -->
-  <section class="cover" id="cover">
+  <!-- ===== الغلاف ===== -->
+  <section class="cover">
     <img class="cover__img" id="coverImg" alt="غلاف الموقع">
     <div class="cover__overlay"></div>
   </section>
 
-  <!-- ======= الهيدر ======= -->
+  <!-- ===== الهيدر (أفاتار فوق وعنوان تحته سطر واحد) ===== -->
   <header>
     <div class="brand">
       <img id="logoImg" class="logo" alt="شعار الخدمة">
-      <h2 style="margin:0">The Ninety-Nine</h2>
+      <h1>The Ninety-Nine</h1>
     </div>
     <div class="toolbar">
       <button id="themeBtn" class="btn-ghost">🌙 Dark</button>
@@ -159,7 +160,7 @@
     </div>
   </header>
 
-  <!-- ======= النافبار ======= -->
+  <!-- ===== النافبار ===== -->
   <div class="nav">
     <button id="nav-login" class="active">🔐 دخول</button>
     <button id="nav-data">👥 بيانات</button>
@@ -167,7 +168,7 @@
     <button id="nav-stats">📊 إحصائيات</button>
   </div>
 
-  <!-- ======= Login ======= -->
+  <!-- ===== Login ===== -->
   <section id="page-login" class="container">
     <div class="card" style="--i:0ms">
       <div class="card-h">🔐 تسجيل الدخول</div>
@@ -183,7 +184,7 @@
     </div>
   </section>
 
-  <!-- ======= Welcome ======= -->
+  <!-- ===== Welcome ===== -->
   <section id="page-welcome" class="container" hidden>
     <div class="card" style="--i:80ms">
       <div class="card-h">👋 مرحبًا بك</div>
@@ -194,7 +195,7 @@
     </div>
   </section>
 
-  <!-- ======= Data ======= -->
+  <!-- ===== Data ===== -->
   <section id="page-data" class="container" hidden>
     <div class="card" style="--i:160ms">
       <div class="card-h">👥 بيانات المخدومين</div>
@@ -202,7 +203,7 @@
         <div class="toolbar">
           <select id="groupSelect" class="input"></select>
           <input id="searchInput" class="input" placeholder="ابحث بالاسم/الموبايل/العنوان..." style="flex:1">
-          <button id="openSheetBtn" class="btn-outline">✏️ تعديل</button>
+          <button id="openSheetBtn" class="btn-ghost">✏️ تعديل</button>
           <button id="refreshBtn" class="btn">⟳ تحديث</button>
           <button id="exportAllBtn" class="btn-ghost">⬇️ تصدير CSV الكل</button>
         </div>
@@ -218,7 +219,7 @@
     </div>
   </section>
 
-  <!-- ======= Attendance ======= -->
+  <!-- ===== Attendance ===== -->
   <section id="page-att" class="container" hidden>
     <div class="card" style="--i:240ms">
       <div class="card-h">✅ تسجيل الحضور</div>
@@ -230,10 +231,10 @@
             <datalist id="attSuggest"></datalist>
           </div>
           <div class="toolbar" style="margin-top:8px">
-            <button id="markAll" class="btn-outline">تحديد الكل</button>
+            <button id="markAll" class="btn-ghost">تحديد الكل</button>
             <button id="clearAll" class="btn-ghost">مسح</button>
             <button id="saveLocal" class="btn">💾 حفظ محلي</button>
-            <button id="downloadCsv" class="btn-outline">⬇️ تنزيل CSV</button>
+            <button id="downloadCsv" class="btn-ghost">⬇️ تنزيل CSV</button>
             <button id="uploadDrive" class="btn">⏫ رفع إلى Google Drive</button>
           </div>
           <div class="table-wrap" style="margin-top:10px">
@@ -256,7 +257,7 @@
     </div>
   </section>
 
-  <!-- ======= Stats ======= -->
+  <!-- ===== Stats ===== -->
   <section id="page-stats" class="container" hidden>
     <div class="card" style="--i:320ms">
       <div class="card-h">📊 التحليلات</div>
@@ -282,7 +283,7 @@
     </div>
   </section>
 
-  <!-- ======= فوتر ثابت ======= -->
+  <!-- ===== فوتر ثابت ===== -->
   <footer class="site-footer">
     جميع الحقوق محفوظة لخدمة شباب كنيسة العذراء مريم و البابا اثناسيوس الرسولي بمدينة نصر.©
   </footer>
@@ -297,19 +298,19 @@
   const toastArea=$('toastArea');
   function toast(msg,type='ok'){ const t=document.createElement('div'); t.className='toast '+type; t.textContent=msg; toastArea.appendChild(t); setTimeout(()=>{ t.style.opacity='0'; setTimeout(()=>t.remove(),400); },2800); }
 
-  /* ===== الشيتات (كما هي) ===== */
+  /* ===== Sheets (كما هي) ===== */
   const SHEETS={
     f1b:{id:'1stXYnDRt6bhAnzsPmZI94j7S25tib4mi',edit:'https://docs.google.com/spreadsheets/d/1stXYnDRt6bhAnzsPmZI94j7S25tib4mi/edit',label:'Family 1 Boys'},
     f1g:{id:'1RC1KXwGJWfRDEfrDJaDymoSOoEstnxXP',edit:'https://docs.google.com/spreadsheets/d/1RC1KXwGJWfRDEfrDJaDymoSOoEstnxXP/edit',label:'Family 1 Girls'},
     f2b:{id:'1CsoAWsz_TrLKbpVdcAljJ0IvWGaDYfJL',edit:'https://docs.google.com/spreadsheets/d/1CsoAWsz_TrLKbpVdcAljJ0IvWGaDYfJL/edit',label:'Family 2 Boys'},
     f2g:{id:'1qUsRqsDiDRBZJTNOsGCH4ZBR9s5At2fa',edit:'https://docs.google.com/spreadsheets/d/1qUsRqsDiDRBZJTNOsGCH4ZBR9s5At2fa/edit',label:'Family 2 Girls'},
-    f3b:{id:'1NJT8UzKL8NNqYiC90xBnT4رHyy-FtfYi',edit:'https://docs.google.com/spreadsheets/d/1NJT8UzKL8NNqYiC90xBnT4رHyy-FtfYi/edit',label:'Family 3 Boys'},
+    f3b:{id:'1NJT8UzKL8NNqYiC90xBnT4rHyy-FtfYi',edit:'https://docs.google.com/spreadsheets/d/1NJT8UzKL8NNqYiC90xBnT4rHyy-FtfYi/edit',label:'Family 3 Boys'},
     f3g:{id:'1H4Okxhz7mvqhqp9GzviqtwXryDOGtme6',edit:'https://docs.google.com/spreadsheets/d/1H4Okxhz7mvqhqp9GzviqtwXryDOGtme6/edit',label:'Family 3 Girls'},
     f4b:{id:'1wrxZMP7rNKRTT6KZHpMKSqyDvNeVRFtm',edit:'https://docs.google.com/spreadsheets/d/1wrxZMP7rNKRTT6KZHpMKSqyDvNeVRFtm/edit',label:'Family 4 Boys'},
     f4g:{id:'1_QN8G0X3Td_uw2HwT38zBsqmfhDto58s',edit:'https://docs.google.com/spreadsheets/d/1_QN8G0X3Td_uw2HwT38zBsqmfhDto58s/edit',label:'Family 4 Girls'}
   };
   const ATTENDANCE_WRITE_URL = 'https://script.google.com/macros/s/AKfycbynMcQb5X4aitbYRT6BeMcH4X7XyJpyagUKp_oHChU/exec';
-  const DRIVE_FOLDER_ID = '1HNCjBUhPcAzNfU-omkd8KqF5Zف8gCWTP';
+  const DRIVE_FOLDER_ID = '1HNCjBUhPcAzNfU-omkd8KqF5Zf8gCWTP';
 
   const USERS=[{user:'admin',mobile:'1234'},{user:'admin1',mobile:'1234'}];
   const VERSES=[
@@ -318,7 +319,7 @@
     'اذهبوا وتلمذوا جميع الأمم (مت 28:19)'
   ];
 
-  /* ===== Logo + Cover (raw GitHub link + fallback) ===== */
+  /* ===== Logo + Cover (raw GitHub + fallback) ===== */
   const logo=$('logoImg');
   const coverImg=$('coverImg');
   const logoCandidates=[
@@ -336,13 +337,13 @@
   }
   (function setNextLogo(ix=0){
     if(ix>=logoCandidates.length){ setFallback(); return; }
-    const url=logoCandidates[ix]; const img=new Image();
-    img.onload=()=>{ logo.src=url; coverImg.src=url; };
-    img.onerror=()=>setNextLogo(ix+1);
-    img.src=url;
+    const url=logoCandidates[ix]; const test=new Image();
+    test.onload=()=>{ logo.src=url; coverImg.src=url; };
+    test.onerror=()=>setNextLogo(ix+1);
+    test.src=url;
   })();
 
-  // الثيم
+  // Theme
   const themeBtn=$('themeBtn');
   function setTheme(mode){
     document.documentElement.dataset.theme=mode;
@@ -352,10 +353,15 @@
   on(themeBtn,'click',()=>{ const cur=document.documentElement.dataset.theme||'light'; setTheme(cur==='dark'?'light':'dark'); });
   setTheme(localStorage.getItem('theme')||'light');
 
-  /* ===== بقية منطق التطبيق كما هو (دخول/جلب بيانات/واتساب/حضور/إحصائيات) ===== */
+  /* ===== التنقل بين الصفحات والوظائف كما هي ===== */
   const LOGGED_KEY='loggedUser';
   const logoutBtn=$('logoutBtn');
-  function showPage(id){ document.querySelectorAll('section.container').forEach(s=>s.hidden=true); $(id).hidden=false; document.querySelectorAll('.nav button').forEach(b=>b.classList.remove('active')); const navBtn=document.getElementById('nav-'+id.split('-')[1]); if(navBtn) navBtn.classList.add('active'); }
+  function showPage(id){
+    document.querySelectorAll('section.container').forEach(s=>s.hidden=true);
+    $(id).hidden=false;
+    document.querySelectorAll('.nav button').forEach(b=>b.classList.remove('active'));
+    const navBtn=document.getElementById('nav-'+id.split('-')[1]); if(navBtn) navBtn.classList.add('active');
+  }
   function isLogged(){ return !!(localStorage.getItem(LOGGED_KEY) || sessionStorage.getItem(LOGGED_KEY)); }
   function setLogged(user,remember){ if(remember){ localStorage.setItem(LOGGED_KEY, JSON.stringify(user)); } else { sessionStorage.setItem(LOGGED_KEY, JSON.stringify(user)); } toggleLogout(); }
   function clearLogged(){ localStorage.removeItem(LOGGED_KEY); sessionStorage.removeItem(LOGGED_KEY); toggleLogout(); }
@@ -613,7 +619,6 @@
     const {rows,when,names,setP}=collectAttendance();
     const csv=rows.map(r=>r.join(',')).join('\n');
 
-    // 1) المحاولة الأساسية: text/plain
     try{
       await postToSheet_plain({
         when, group:activeGroup, groupLabel:SHEETS[activeGroup].label,
