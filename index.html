@@ -10,11 +10,12 @@
     :root{
       --primary:#1b335f; --accent:#e5c558; --bg:#f9f9fb; --card:#fff; --text:#111; --muted:#6b7280;
       --ok:#16a34a; --warn:#ca8a04; --danger:#dc2626;
-
-      /* غلاف ديناميكي */
-      --cover-h: clamp(180px, 28vh, 250px);
+      /* الغلاف */
+      --cover-h: clamp(180px, 28vh, 280px);
       --cover-grad: linear-gradient(180deg, #00000066 0%, #00000022 40%, transparent 70%);
       --cover-border: #00000014;
+      /* الفوتر */
+      --footer-h: 46px;
     }
     :root[data-theme="dark"]{
       --bg:#0f1115; --card:#161a22; --text:#e7e7ea; --muted:#9aa3b2;
@@ -23,36 +24,27 @@
     }
 
     *{box-sizing:border-box}
-    body{margin:0;font-family:'Cairo',system-ui,Segoe UI,Roboto,Arial,sans-serif;background:var(--bg);color:var(--text);transition:background .3s,color .3s}
+    body{
+      margin:0;
+      font-family:'Cairo',system-ui,Segoe UI,Roboto,Arial,sans-serif;
+      background:var(--bg); color:var(--text);
+      transition:background .3s,color .3s;
+      padding-bottom: var(--footer-h); /* علشان الفوتر الثابت ما يغطيش المحتوى */
+    }
 
     /* ======= الغلاف (Cover) ======= */
     .cover{
       position:relative; width:100%; height:var(--cover-h); overflow:hidden;
       border-bottom:1px solid var(--cover-border);
-      isolation:isolate; /* عشان الفلتر */
-    }
-    .cover__inner{
-      position:absolute; inset:0; will-change:transform; transform:translate3d(0,0,0);
+      background:#000;
     }
     .cover__img{
-      position:absolute; inset:0; width:100%; height:100%; object-fit:cover; object-position:center;
+      position:absolute; inset:0;
+      width:100%; height:100%;
+      object-fit:cover; object-position:center;
       filter:saturate(1.05) contrast(1.05);
-      transform:scale(1.06); /* بسيط عشان البارالاكس */
     }
-    .cover__overlay{
-      position:absolute; inset:0; background:var(--cover-grad); pointer-events:none;
-    }
-    .cover__title{
-      position:absolute; inset-inline:16px; bottom:16px;
-      color:#fff; text-shadow:0 2px 16px #0008; font-weight:900; letter-spacing:.3px;
-      display:flex; align-items:flex-end; gap:10px; flex-wrap:wrap;
-    }
-    .cover__badge{
-      display:inline-flex; align-items:center; gap:6px;
-      padding:6px 10px; border-radius:999px; background:#ffffffdd; color:#0b0d10; font-weight:900;
-      border:1px solid #0002;
-    }
-    [data-theme="dark"] .cover__badge{ background:#111827dd; color:#e7e7ea; border-color:#ffffff1f }
+    .cover__overlay{ position:absolute; inset:0; background:var(--cover-grad); pointer-events:none; }
 
     /* ======= الهيدر ======= */
     header{
@@ -61,8 +53,9 @@
     }
     .brand{display:flex;align-items:center;gap:12px}
     .logo{
-      height:58px;width:58px;border-radius:14px;border:2px solid var(--accent);
-      object-fit:cover;background:#fff;box-shadow:0 6px 16px #0002; animation:pop .6s ease
+      width:50px; height:50px; border-radius:12px;
+      border:2px solid var(--accent); object-fit:cover; background:#fff;
+      box-shadow:0 6px 16px #0002; animation:pop .6s ease;
     }
 
     /* ======= النافبار ======= */
@@ -128,9 +121,17 @@
     .att-grid{display:grid;grid-template-columns:1fr 1fr;gap:16px}
     @media(max-width:900px){.att-grid{grid-template-columns:1fr}}
 
-    .toast-area{position:fixed;bottom:16px;left:50%;transform:translateX(-50%);display:flex;flex-direction:column;gap:8px;z-index:50}
+    .toast-area{position:fixed;bottom:calc(var(--footer-h) + 8px);left:50%;transform:translateX(-50%);display:flex;flex-direction:column;gap:8px;z-index:50}
     .toast{background:var(--card);color:var(--text);border:1px solid #0002;padding:10px 14px;border-radius:10px;box-shadow:0 6px 20px #0004;min-width:240px;transition:opacity .3s}
     .toast.ok{border-color:var(--ok)} .toast.warn{border-color:var(--warn)} .toast.err{border-color:var(--danger)}
+
+    /* ======= فوتر ثابت ======= */
+    footer.site-footer{
+      position:fixed; inset-inline:0; bottom:0; height:var(--footer-h);
+      display:flex; align-items:center; justify-content:center; gap:8px;
+      padding:0 12px; background:var(--card); color:var(--muted);
+      border-top:1px solid #0002; z-index:40; font-size:13px;
+    }
 
     /* Animations */
     @keyframes fadeUp { from {opacity:0; transform: translateY(8px)} to {opacity:1; transform:none} }
@@ -140,23 +141,17 @@
 </head>
 <body>
 
-  <!-- ======= الغلاف الديناميكي ======= -->
+  <!-- ======= الغلاف ======= -->
   <section class="cover" id="cover">
-    <div class="cover__inner" id="coverInner">
-      <img class="cover__img" id="coverImg" alt="غلاف الموقع">
-      <div class="cover__overlay"></div>
-    </div>
-    <div class="cover__title">
-      <span style="font-size:clamp(18px,4vw,28px)">The Ninety-Nine</span>
-      <span class="cover__badge">خدمة الشباب</span>
-    </div>
+    <img class="cover__img" id="coverImg" alt="غلاف الموقع">
+    <div class="cover__overlay"></div>
   </section>
 
   <!-- ======= الهيدر ======= -->
   <header>
     <div class="brand">
       <img id="logoImg" class="logo" alt="شعار الخدمة">
-      <h2>The Ninety-Nine</h2>
+      <h2 style="margin:0">The Ninety-Nine</h2>
     </div>
     <div class="toolbar">
       <button id="themeBtn" class="btn-ghost">🌙 Dark</button>
@@ -219,7 +214,6 @@
             <tbody id="tbody"></tbody>
           </table>
         </div>
-        <p class="hint" style="margin-top:8px">جميع الحقوق محفوظة لخدمة شباب كنيسة العذراء مريم و البابا اثناسيوس الرسولي بمدينة نصر.©</p>
       </div>
     </div>
   </section>
@@ -288,6 +282,11 @@
     </div>
   </section>
 
+  <!-- ======= فوتر ثابت ======= -->
+  <footer class="site-footer">
+    جميع الحقوق محفوظة لخدمة شباب كنيسة العذراء مريم و البابا اثناسيوس الرسولي بمدينة نصر.©
+  </footer>
+
   <div id="toastArea" class="toast-area"></div>
 
 <script>
@@ -298,20 +297,19 @@
   const toastArea=$('toastArea');
   function toast(msg,type='ok'){ const t=document.createElement('div'); t.className='toast '+type; t.textContent=msg; toastArea.appendChild(t); setTimeout(()=>{ t.style.opacity='0'; setTimeout(()=>t.remove(),400); },2800); }
 
-  /* ========== الشيتات ==========
-     (نفس كودك السابق – بدون تغيير وظيفي) */
+  /* ===== الشيتات (كما هي) ===== */
   const SHEETS={
     f1b:{id:'1stXYnDRt6bhAnzsPmZI94j7S25tib4mi',edit:'https://docs.google.com/spreadsheets/d/1stXYnDRt6bhAnzsPmZI94j7S25tib4mi/edit',label:'Family 1 Boys'},
     f1g:{id:'1RC1KXwGJWfRDEfrDJaDymoSOoEstnxXP',edit:'https://docs.google.com/spreadsheets/d/1RC1KXwGJWfRDEfrDJaDymoSOoEstnxXP/edit',label:'Family 1 Girls'},
     f2b:{id:'1CsoAWsz_TrLKbpVdcAljJ0IvWGaDYfJL',edit:'https://docs.google.com/spreadsheets/d/1CsoAWsz_TrLKbpVdcAljJ0IvWGaDYfJL/edit',label:'Family 2 Boys'},
     f2g:{id:'1qUsRqsDiDRBZJTNOsGCH4ZBR9s5At2fa',edit:'https://docs.google.com/spreadsheets/d/1qUsRqsDiDRBZJTNOsGCH4ZBR9s5At2fa/edit',label:'Family 2 Girls'},
-    f3b:{id:'1NJT8UzKL8NNqYiC90xBnT4rHyy-FtfYi',edit:'https://docs.google.com/spreadsheets/d/1NJT8UzKL8NNqYiC90xBnT4rHyy-FtfYi/edit',label:'Family 3 Boys'},
+    f3b:{id:'1NJT8UzKL8NNqYiC90xBnT4رHyy-FtfYi',edit:'https://docs.google.com/spreadsheets/d/1NJT8UzKL8NNqYiC90xBnT4رHyy-FtfYi/edit',label:'Family 3 Boys'},
     f3g:{id:'1H4Okxhz7mvqhqp9GzviqtwXryDOGtme6',edit:'https://docs.google.com/spreadsheets/d/1H4Okxhz7mvqhqp9GzviqtwXryDOGtme6/edit',label:'Family 3 Girls'},
     f4b:{id:'1wrxZMP7rNKRTT6KZHpMKSqyDvNeVRFtm',edit:'https://docs.google.com/spreadsheets/d/1wrxZMP7rNKRTT6KZHpMKSqyDvNeVRFtm/edit',label:'Family 4 Boys'},
     f4g:{id:'1_QN8G0X3Td_uw2HwT38zBsqmfhDto58s',edit:'https://docs.google.com/spreadsheets/d/1_QN8G0X3Td_uw2HwT38zBsqmfhDto58s/edit',label:'Family 4 Girls'}
   };
   const ATTENDANCE_WRITE_URL = 'https://script.google.com/macros/s/AKfycbynMcQb5X4aitbYRT6BeMcH4X7XyJpyagUKp_oHChU/exec';
-  const DRIVE_FOLDER_ID = '1HNCjBUhPcAzNfU-omkd8KqF5Zf8gCWTP';
+  const DRIVE_FOLDER_ID = '1HNCjBUhPcAzNfU-omkd8KqF5Zف8gCWTP';
 
   const USERS=[{user:'admin',mobile:'1234'},{user:'admin1',mobile:'1234'}];
   const VERSES=[
@@ -320,48 +318,31 @@
     'اذهبوا وتلمذوا جميع الأمم (مت 28:19)'
   ];
 
-  /* ===== Logo/Cover (raw GitHub link + fallback) =====
-     بنستخدم نفس الصورة للّوجو الصغير والكفر الكبير */
+  /* ===== Logo + Cover (raw GitHub link + fallback) ===== */
   const logo=$('logoImg');
   const coverImg=$('coverImg');
   const logoCandidates=[
-    // (1) رابط مباشر لنفس الـ commit (مضمون)
     'https://raw.githubusercontent.com/Minakhairat/Youth.github.io/7a5b81012d3dde0fc4d0f53acd35c67c75502670/IMG-20250908-WA0008.jpg',
-    // (2) احتياطي على main
     'https://raw.githubusercontent.com/Minakhairat/Youth.github.io/main/IMG-20250908-WA0008.jpg'
-    // // (3) لو عامل GitHub Pages:
-    // 'https://minakhairat.github.io/Youth.github.io/IMG-20250908-WA0008.jpg'
   ];
   function setFallback(){
     const svg = `
       <svg xmlns="http://www.w3.org/2000/svg" width="800" height="400">
-        <defs>
-          <linearGradient id="g" x1="0" x2="1" y1="0" y2="0">
-            <stop offset="0%" stop-color="#1b335f"/><stop offset="100%" stop-color="#e5c558"/>
-          </linearGradient>
-        </defs>
-        <rect width="800" height="400" fill="#0b0f1a"/>
-        <circle cx="260" cy="200" r="160" fill="url(#g)" opacity="0.12"/>
-        <text x="60" y="230" font-family="Cairo, Arial" font-size="56" fill="#fff" font-weight="900">The Ninety-Nine</text>
+        <defs><linearGradient id="g" x1="0" x2="1" y1="0" y2="0"><stop offset="0%" stop-color="#1b335f"/><stop offset="100%" stop-color="#e5c558"/></linearGradient></defs>
+        <rect width="800" height="400" fill="#0b0f1a"/><circle cx="260" cy="200" r="160" fill="url(#g)" opacity="0.12"/>
       </svg>`;
-    const data = 'data:image/svg+xml;utf8,'+encodeURIComponent(svg);
-    logo.src = data;
-    coverImg.src = data;
+    const data='data:image/svg+xml;utf8,'+encodeURIComponent(svg);
+    logo.src=data; coverImg.src=data;
   }
   (function setNextLogo(ix=0){
     if(ix>=logoCandidates.length){ setFallback(); return; }
-    const url = logoCandidates[ix];
-    // لو فشل رابط، جرّب اللي بعده
-    const img = new Image();
-    img.onload = ()=>{
-      logo.src = url;
-      coverImg.src = url;
-    };
-    img.onerror = ()=> setNextLogo(ix+1);
-    img.src = url;
+    const url=logoCandidates[ix]; const img=new Image();
+    img.onload=()=>{ logo.src=url; coverImg.src=url; };
+    img.onerror=()=>setNextLogo(ix+1);
+    img.src=url;
   })();
 
-  // ثيم
+  // الثيم
   const themeBtn=$('themeBtn');
   function setTheme(mode){
     document.documentElement.dataset.theme=mode;
@@ -371,19 +352,7 @@
   on(themeBtn,'click',()=>{ const cur=document.documentElement.dataset.theme||'light'; setTheme(cur==='dark'?'light':'dark'); });
   setTheme(localStorage.getItem('theme')||'light');
 
-  // ====== بارالاكس خفيف للغلاف ======
-  const cover=$('cover');
-  const coverInner=$('coverInner');
-  function onScroll(){
-    // حرك الصورة لأعلى بنسبة بسيطة (0.25) لإحساس البارالاكس – آمن للموبايل
-    const y = Math.min(window.scrollY, 600);
-    coverInner.style.transform = `translate3d(0, ${y * -0.25}px, 0)`;
-  }
-  on(window,'scroll', onScroll);
-  on(window,'resize', ()=>{}); // جاهز لتعديلات مستقبلية
-  onScroll();
-
-  // ===== بقية منطق التطبيق (بدون تغيير) =====
+  /* ===== بقية منطق التطبيق كما هو (دخول/جلب بيانات/واتساب/حضور/إحصائيات) ===== */
   const LOGGED_KEY='loggedUser';
   const logoutBtn=$('logoutBtn');
   function showPage(id){ document.querySelectorAll('section.container').forEach(s=>s.hidden=true); $(id).hidden=false; document.querySelectorAll('.nav button').forEach(b=>b.classList.remove('active')); const navBtn=document.getElementById('nav-'+id.split('-')[1]); if(navBtn) navBtn.classList.add('active'); }
@@ -508,7 +477,7 @@
   function toImg(val){ const s=String(val||'').trim(); if(!s) return ''; if(/^https?:\/\//.test(s)) return s; const m=s.match(/[\-\w]{25,}/); return m?`https://drive.google.com/uc?export=download&id=${m[0]}`:''; }
   function telLink(raw){ const digits=String(raw||'').replace(/[^\d+]/g,''); return digits? `<a class="tel" href="tel:${digits}">${escapeHtml(raw)}</a>` : (escapeHtml(raw)||'—'); }
 
-  /* ==== واتساب: تنضيف الرقم + لينك + أيقونة ==== */
+  /* ==== واتساب ==== */
   function cleanPhone(raw){
     const s = String(raw||'').trim();
     if(!s) return '';
@@ -644,7 +613,7 @@
     const {rows,when,names,setP}=collectAttendance();
     const csv=rows.map(r=>r.join(',')).join('\n');
 
-    // 1) المحاولة الأساسية: text/plain (بدون Preflight)
+    // 1) المحاولة الأساسية: text/plain
     try{
       await postToSheet_plain({
         when, group:activeGroup, groupLabel:SHEETS[activeGroup].label,
@@ -656,8 +625,6 @@
       toast('تم رفع CSV إلى Drive','ok');
       return;
     }catch(e1){
-      console.warn('plain fail', e1);
-      // 2) محاولة احتياطية: form-urlencoded
       try{
         await postToSheet_form({
           when, group:activeGroup, groupLabel:SHEETS[activeGroup].label,
@@ -669,11 +636,9 @@
         toast('تم الرفع (طريقة احتياطية)','ok');
         return;
       }catch(e2){
-        console.error('form fail', e2);
         const isFile = location.protocol==='file:';
         const msg = isFile ? 'افتح الصفحة عبر http:// بدل file://.' : 'تحقق من نشر Web App بصلاحية Anyone ومنح إذن Drive (واعمل Authorize أول مرة).';
-        toast('فشل الرفع: '+(e2.message||e1.message),'warn');
-        toast(msg,'warn');
+        toast('فشل الرفع','warn'); toast(msg,'warn');
       }
     }
   }
@@ -682,34 +647,25 @@
   async function postToSheet_plain(payload){
     const controller = new AbortController(); const t=setTimeout(()=>controller.abort(),20000);
     const r = await fetch(ATTENDANCE_WRITE_URL+`?origin=${encodeURIComponent(location.origin)}`,{
-      method:'POST',
-      headers:{'Content-Type':'text/plain;charset=utf-8'},
-      body: JSON.stringify(payload),
-      signal:controller.signal,
-      redirect:'follow',
-      referrerPolicy:'no-referrer'
+      method:'POST', headers:{'Content-Type':'text/plain;charset=utf-8'},
+      body: JSON.stringify(payload), signal:controller.signal, redirect:'follow', referrerPolicy:'no-referrer'
     });
     clearTimeout(t);
     const txt=await r.text().catch(()=> '');
-    if(!r.ok || !(/^OK/i).test((txt||'').trim() || 'OK')){ throw new Error(`HTTP ${r.status} — ${txt||'no body'}`); }
+    if(!r.ok || !(/^OK/i).test((txt||'').trim() || 'OK')){ throw new Error(`HTTP ${r.status}`); }
     return txt;
   }
-
-  // احتياطي: x-www-form-urlencoded
+  // احتياطي
   async function postToSheet_form(payload){
     const body = new URLSearchParams({payload: JSON.stringify(payload)}).toString();
     const controller = new AbortController(); const t=setTimeout(()=>controller.abort(),20000);
     const r = await fetch(ATTENDANCE_WRITE_URL,{
-      method:'POST',
-      headers:{'Content-Type':'application/x-www-form-urlencoded;charset=utf-8'},
-      body,
-      signal:controller.signal,
-      redirect:'follow',
-      referrerPolicy:'no-referrer'
+      method:'POST', headers:{'Content-Type':'application/x-www-form-urlencoded;charset=utf-8'},
+      body, signal:controller.signal, redirect:'follow', referrerPolicy:'no-referrer'
     });
     clearTimeout(t);
     const txt=await r.text().catch(()=> '');
-    if(!r.ok || !(/^OK/i).test((txt||'').trim() || 'OK')){ throw new Error(`HTTP ${r.status} — ${txt||'no body'}`); }
+    if(!r.ok || !(/^OK/i).test((txt||'').trim() || 'OK')){ throw new Error(`HTTP ${r.status}`); }
     return txt;
   }
 
@@ -756,4 +712,3 @@
 </script>
 </body>
 </html>
-
