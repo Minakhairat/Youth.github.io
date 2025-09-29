@@ -29,7 +29,7 @@
 
     /* ===== الغلاف ===== */
     .cover{ position:relative; width:100%; height:var(--cover-h); overflow:hidden; border-bottom:1px solid var(--cover-border); background:#000; }
-    .cover__img{ position:absolute; inset:0; width:100%; height:100%; object-fit:contain; object-position:center; filter:saturate(1.05) contrast(1.05); }
+    .cover__img{ position:absolute; inset:0; width:100%; height:100%; object-fit:cover; object-position:center; filter:saturate(1.05) contrast(1.05); }
     .cover__overlay{ position:absolute; inset:0; background:var(--cover-grad); pointer-events:none; }
 
     /* ===== الهيدر ===== */
@@ -40,8 +40,8 @@
     }
     .brand{ display:flex; flex-direction:column; align-items:center; gap:6px; text-align:center; }
     .logo{
-      width:140px; height:50px; border-radius:16px; border:3px solid var(--accent);
-      object-fit:contain; background:#fff; box-shadow:0 6px 16px #0003; animation:pop .6s ease;
+      width:220px; height:80px; border-radius:16px; border:3px solid var(--accent);
+      object-fit:cover; background:#fff; box-shadow:0 6px 16px #0003; animation:pop .6s ease;
     }
     .brand h1{
       margin:0; font-size:22px; font-weight:900; line-height:1;
@@ -136,7 +136,7 @@
       tbody td:nth-child(6){ grid-area: address; }
       tbody td:nth-child(7){ grid-area: fun; }
       tbody td:nth-child(8){ grid-area: notes; }
-      /* أخفي عنوان العمود في كروت الموبايل */
+      /* عنوان الحقل فوق كل قيمة */
       tbody td::before{content:attr(data-label) ' : ';font-weight:900;color:var(--muted);display:block;margin-bottom:2px}
       tbody td:nth-child(5)::before{content:'';display:none} /* لا عنوان للصورة */
       td{padding:6px 0}
@@ -332,7 +332,7 @@
   const toastArea=$('toastArea');
   function toast(msg,type='ok'){ const t=document.createElement('div'); t.className='toast '+type; t.textContent=msg; toastArea.appendChild(t); setTimeout(()=>{ t.style.opacity='0'; setTimeout(()=>t.remove(),400); },2800); }
 
-  /* ===== إعدادات الشيت كما هي ===== */
+  /* ===== إعدادات الشيت ===== */
   const SHEETS={
     f1b:{id:'1stXYnDRt6bhAnzsPmZI94j7S25tib4mi',edit:'https://docs.google.com/spreadsheets/d/1stXYnDRt6bhAnzsPmZI94j7S25tib4mi/edit',label:'Family 1 Boys'},
     f1g:{id:'1RC1KXwGJWfRDEfrDJaDymoSOoEstnxXP',edit:'https://docs.google.com/spreadsheets/d/1RC1KXwGJWfRDEfrDJaDymoSOoEstnxXP/edit',label:'Family 1 Girls'},
@@ -438,21 +438,48 @@
   const SHEET_CACHE={}; let activeGroup='f1b';
   const csvUrl=(id)=>`https://docs.google.com/spreadsheets/d/${id}/export?format=csv`;
 
+  /* خريطة الأعمدة (أضفنا image بجميع التهجئات) */
   const MAP={
     name:['name','الاسم','اسم','full name','student','إسم'],
     family:['family','رقم الأسرة','group','رقم الاسرة'],
     mobile:['mob1','mobile','phone','tel','رقم الموبايل','موبايل','تليفون'],
     father:['أب الاعتراف','اب الاعتراف','confession father','father of confession'],
-    photo:['photo','image','avatar','صورة'],
+    photo:['photo','image','avatar','صورة','Image','Photo','IMAGE','PHOTO'],
     addressMulti:['address','العنوان','address1','address 1','address2','address 2','street','شارع','city','مدينة','area','حي','region','محافظة'],
     fun:['fun fact','fun','facts','Fun Fact'],
     notes:['notes','ملاحظات','remarks']
   };
   const pick=(headers,keys)=> headers.find(h=> keys.map(k=>String(k).toLowerCase()).includes(String(h).toLowerCase()))||null;
 
-  function toImg(val){ const s=String(val||'').trim(); if(!s) return ''; if(/^https?:\/\//.test(s)) return s; const m=s.match(/[\-\w]{25,}/); return m?`https://drive.google.com/uc?export=download&id=${m[0]}`:''; }
-  function telLink(raw){ const digits=String(raw||'').replace(/[^\d+]/g,''); return digits? `<a class="tel" href="tel:${digits}">${escapeHtml(raw)}</a>` : (escapeHtml(raw)||'—'); }
+  /* === أهم تعديل: تحويل قيمة الصورة لرابط مباشر صالح للـ <img> === */
+  function toImg(val){
+    const s = String(val||'').trim();
+    if(!s) return '';
 
+    // لو الخلية فيها أكتر من نص/لينك ناخد أول واحد
+    const first = s.split(/\s+/)[0];
+
+    // مجرد ID فقط
+    const idOnly = first.match(/^[\w-]{25,}$/);
+    if(idOnly) return `https://drive.google.com/uc?export=view&id=${idOnly[0]}`;
+
+    // كل صيغ روابط Google Drive المعروفة
+    const idFromDrive =
+      first.match(/\/file\/d\/([\w-]{25,})/) ||
+      first.match(/[?&]id=([\w-]{25,})/)     ||
+      first.match(/\/uc\?id=([\w-]{25,})/);
+    if(idFromDrive) return `https://drive.google.com/uc?export=view&id=${idFromDrive[1]}`;
+
+    // Dropbox → raw
+    if(/dropbox\.com/.test(first)) return first.replace(/\?dl=0$/, '?raw=1').replace(/\?dl=1$/, '?raw=1');
+
+    // أي رابط http(s) تاني
+    if(/^https?:\/\//i.test(first)) return first;
+
+    return '';
+  }
+
+  function telLink(raw){ const digits=String(raw||'').replace(/[^\d+]/g,''); return digits? `<a class="tel" href="tel:${digits}">${escapeHtml(raw)}</a>` : (escapeHtml(raw)||'—'); }
   function initialsAvatar(name){
     name = (name||'').trim();
     const initials = name.split(/\s+/).slice(0,2).map(s=>s[0]||'').join('').toUpperCase() || 'NA';
@@ -491,7 +518,7 @@
         family:get(r,famCol)||SHEETS[key].label,
         mobile:get(r,mobCol),
         father:get(r,fathCol),
-        photo:toImg(get(r,photoCol)),
+        photo:toImg(get(r,photoCol)),   // ← استخدام الدالة الجديدة
         address:address,
         fun:'',
         notes:get(r,notesCol)
