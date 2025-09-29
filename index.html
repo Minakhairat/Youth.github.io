@@ -13,14 +13,15 @@
     body{margin:0;font-family:'Cairo',sans-serif;background:var(--bg);color:var(--text);transition:background .3s,color .3s}
     header{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:10px;background:var(--card);border-bottom:1px solid #0002;position:sticky;top:0;z-index:10}
     .brand{display:flex;align-items:center;gap:12px}
-    .logo{height:50px;width:50px;border-radius:10px;border:2px solid var(--accent);object-fit:contain;background:#fff}
+    .logo{height:50px;width:50px;border-radius:10px;border:2px solid var(--accent);object-fit:contain;background:#fff; animation: pop .6s ease}
     .nav{display:flex;gap:12px;justify-content:center;margin:12px;flex-wrap:wrap}
-    .nav button{padding:10px 14px;border-radius:10px;border:1px solid #0002;background:var(--card);cursor:pointer;font-weight:800;color:var(--text)}
+    .nav button{padding:10px 14px;border-radius:10px;border:1px solid #0002;background:var(--card);cursor:pointer;font-weight:800;color:var(--text); transition:transform .15s, box-shadow .2s}
+    .nav button:hover{ transform: translateY(-2px); box-shadow:0 6px 14px #0003 }
     .nav button.active{background:var(--accent);color:#000}
     .container{padding:16px;max-width:1200px;margin:auto}
-    .card{background:var(--card);border:1px solid #0002;border-radius:16px;box-shadow:0 6px 20px #0002;margin-bottom:20px;overflow:hidden}
+    .card{background:var(--card);border:1px solid #0002;border-radius:16px;box-shadow:0 6px 20px #0002;margin-bottom:20px;overflow:hidden; animation: fadeUp .5s ease var(--i,0ms) both}
     .card-h{padding:14px 20px;font-weight:900;background:linear-gradient(90deg,var(--primary),var(--accent));color:#000; -webkit-background-clip:text; -webkit-text-fill-color:transparent;}
-    .card-h::before{content:'';display:block;height:3px;background:linear-gradient(90deg,var(--primary),var(--accent))}
+    .card-h::before{content:'';display:block;height:3px;background:linear-gradient(90deg,var(--primary),var(--accent)); background-size:200% 100%; animation: shimmer 2.1s linear infinite}
     .card-b{padding:16px}
     .btn{background:var(--primary);color:#fff;padding:10px 16px;border:none;border-radius:10px;font-weight:800;cursor:pointer}
     .btn:hover{filter:brightness(1.05)}
@@ -42,10 +43,22 @@
     [data-theme="dark"] tbody tr:hover{background:#0f1726}
     img.avatar{width:44px;height:44px;border-radius:10px;object-fit:cover;border:2px solid var(--accent)}
     a.tel{color:inherit;text-decoration:underline dotted}
+
+    /* زرار واتساب */
+    .tel-wrap{display:flex;align-items:center;gap:8px;flex-wrap:wrap}
+    .wa-btn{
+      display:inline-flex;align-items:center;gap:8px;
+      padding:6px 10px;border-radius:10px;border:1px solid #0002;
+      background:#25D366;color:#fff;text-decoration:none;font-weight:800;
+      box-shadow:0 2px 8px #0002;transform:translateZ(0)
+    }
+    .wa-btn:hover{filter:brightness(1.05);transform:translateY(-1px)}
+    .wa-ic{width:18px;height:18px;display:block}
+
     @media(max-width:768px){
       table{min-width:unset}
       thead{display:none}
-      tbody tr{display:grid;grid-template-columns:1fr;gap:8px;border:1px solid #0002;border-radius:12px;margin:10px 0;padding:12px;background:var(--card)}
+      tbody tr{display:grid;grid-template-columns:1fr;gap:8px;border:1px solid #0002;border-radius:12px;margin:10px 0;padding:12px;background:var(--card); animation: fadeUp .35s ease var(--i,0ms) both}
       td{border:none;padding:6px 0}
       td::before{content:attr(data-label) ' : ';font-weight:900;color:var(--muted)}
     }
@@ -59,6 +72,11 @@
     .toast-area{position:fixed;bottom:16px;left:50%;transform:translateX(-50%);display:flex;flex-direction:column;gap:8px;z-index:50}
     .toast{background:var(--card);color:var(--text);border:1px solid #0002;padding:10px 14px;border-radius:10px;box-shadow:0 6px 20px #0004;min-width:240px;transition:opacity .3s}
     .toast.ok{border-color:var(--ok)} .toast.warn{border-color:var(--warn)} .toast.err{border-color:var(--danger)}
+
+    /* Animations */
+    @keyframes fadeUp { from {opacity:0; transform: translateY(8px)} to {opacity:1; transform:none} }
+    @keyframes pop { 0% {transform:scale(.9); opacity:0} 60% {transform:scale(1.03)} 100% {transform:scale(1); opacity:1} }
+    @keyframes shimmer { 0%{background-position:0 0} 100%{background-position:200% 0} }
   </style>
 </head>
 <body>
@@ -82,7 +100,7 @@
 
   <!-- Login -->
   <section id="page-login" class="container">
-    <div class="card">
+    <div class="card" style="--i:0ms">
       <div class="card-h">🔐 تسجيل الدخول</div>
       <div class="card-b">
         <div class="toolbar">
@@ -98,7 +116,7 @@
 
   <!-- Welcome -->
   <section id="page-welcome" class="container" hidden>
-    <div class="card">
+    <div class="card" style="--i:80ms">
       <div class="card-h">👋 مرحبًا بك</div>
       <div class="card-b">
         <h2 id="welcomeName"></h2>
@@ -109,7 +127,7 @@
 
   <!-- Data -->
   <section id="page-data" class="container" hidden>
-    <div class="card">
+    <div class="card" style="--i:160ms">
       <div class="card-h">👥 بيانات المخدومين</div>
       <div class="card-b">
         <div class="toolbar">
@@ -134,7 +152,7 @@
 
   <!-- Attendance -->
   <section id="page-att" class="container" hidden>
-    <div class="card">
+    <div class="card" style="--i:240ms">
       <div class="card-h">✅ تسجيل الحضور</div>
       <div class="card-b att-grid">
         <div>
@@ -172,7 +190,7 @@
 
   <!-- Stats -->
   <section id="page-stats" class="container" hidden>
-    <div class="card">
+    <div class="card" style="--i:320ms">
       <div class="card-h">📊 التحليلات</div>
       <div class="card-b">
         <div class="toolbar">
@@ -226,19 +244,33 @@
     'اذهبوا وتلمذوا جميع الأمم (مت 28:19)'
   ];
 
-  // Logo – جرّب مسارات مختلفة
+  /* ===== Logo (يستخدم لينكك + فولباك SVG) ===== */
   const logo=$('logoImg');
-  const LOGO_ID='1A_SZ-BtYHsfCmqBfSP1OwyAeACJ57ISF';
   const logoCandidates=[
-    `https://share.google/kLKr6K1j5mpX0IUmo${LOGO_ID}`
+    'https://share.google/kLKr6K1j5mpX0IUmo' // اللينك اللي بعته
   ];
   (function setNextLogo(ix=0){
     if(ix>=logoCandidates.length){
-      logo.src='data:image/svg+xml;utf8,'+encodeURIComponent(`<svg xmlns=”https://share.google/kLKr6K1j5mpX0IUmo" width="100" height="100"><rect width="100" height="100" fill="white"/><text x="50" y="55" text-anchor="middle" font-family="Arial" font-size="14" fill="black">Logo</text></svg>`);
+      const fallbackSvg = `
+        <svg xmlns="http://www.w3.org/2000/svg" width="100" height="100">
+          <defs>
+            <linearGradient id="g" x1="0" x2="1" y1="0" y2="0">
+              <stop offset="0%" stop-color="#1b335f"/><stop offset="100%" stop-color="#e5c558"/>
+            </linearGradient>
+          </defs>
+          <rect width="100" height="100" rx="14" fill="white"/>
+          <circle cx="50" cy="50" r="42" fill="url(#g)" opacity="0.10"/>
+          <text x="50" y="56" text-anchor="middle" font-family="Cairo, Arial" font-size="16" fill="#1b335f" font-weight="900">LOGO</text>
+        </svg>`;
+      logo.src='data:image/svg+xml;utf8,'+encodeURIComponent(fallbackSvg);
+      logo.alt='الشعار';
+      logo.title='Logo';
       return;
     }
-    logo.src=logoCandidates[ix];
     logo.onerror=()=>setNextLogo(ix+1);
+    logo.src=logoCandidates[ix];
+    logo.alt='شعار الخدمة';
+    logo.title='The Ninety-Nine';
   })();
 
   // Theme
@@ -373,12 +405,38 @@
   function toImg(val){ const s=String(val||'').trim(); if(!s) return ''; if(/^https?:\/\//.test(s)) return s; const m=s.match(/[\-\w]{25,}/); return m?`https://drive.google.com/uc?export=download&id=${m[0]}`:''; }
   function telLink(raw){ const digits=String(raw||'').replace(/[^\d+]/g,''); return digits? `<a class="tel" href="tel:${digits}">${escapeHtml(raw)}</a>` : (escapeHtml(raw)||'—'); }
 
+  /* ==== واتساب: تنضيف الرقم + لينك + أيقونة رسمية ==== */
+  function cleanPhone(raw){
+    const s = String(raw||'').trim();
+    if(!s) return '';
+    let d = s.replace(/[^\d+]/g,'');   // سيب الأرقام و + فقط
+    if(d.startsWith('+')) d = d.slice(1); // wa.me بدون +
+    // مصر: 0xxxxxxxxxx -> 20xxxxxxxxx
+    if(/^0\d{10}$/.test(d)) d = '20' + d.slice(1);
+    return d;
+  }
+  function waLink(raw){
+    const d = cleanPhone(raw);
+    return d ? `https://wa.me/${d}` : '';
+  }
+  function waSvg(){
+    // مسار أيقونة واتساب (متوافق مع Bootstrap Icons – ترخيص MIT)
+    return `<svg class="wa-ic" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16" aria-hidden="true">
+      <path fill="currentColor" d="M13.601 2.326A7.892 7.892 0 0 0 8.002 0C3.584 0 .003 3.58.003 7.998c0 1.411.37 2.787 1.073 4.005L0 16l4.107-1.06a7.979 7.979 0 0 0 3.895 1.006h.003c4.418 0 7.998-3.58 7.998-7.998a7.934 7.934 0 0 0-2.402-5.622ZM8.002 14.5h-.003a6.5 6.5 0 0 1-3.316-.91l-.237-.141-2.435.628.65-2.374-.154-.243A6.492 6.492 0 0 1 1.503 8c0-3.586 2.913-6.5 6.499-6.5 1.736 0 3.366.676 4.593 1.903a6.45 6.45 0 0 1 1.903 4.595c0 3.586-2.914 6.502-6.496 6.502Zm3.67-4.875c-.2-.1-1.18-.58-1.363-.646-.182-.068-.315-.1-.448.1-.133.199-.514.646-.63.779-.116.134-.233.15-.433.05-.2-.1-.843-.31-1.606-.99-.593-.53-.993-1.18-1.11-1.377-.116-.2-.013-.307.087-.406.089-.088.2-.229.3-.343.1-.115.133-.2.2-.332.067-.134.033-.25-.017-.35-.05-.1-.448-1.08-.614-1.48-.16-.39-.328-.337-.448-.343-.115-.006-.25-.007-.383-.007a.74.74 0 0 0-.533.25c-.183.2-.7.684-.7 1.67 0 .984.717 1.93.817 2.066.1.135 1.41 2.153 3.417 3.018.478.206.85.33 1.14.423.48.154.917.132 1.262.08.385-.058 1.18-.482 1.35-.95.167-.469.167-.87.117-.95-.05-.083-.183-.133-.383-.233Z"/>
+    </svg>`;
+  }
+
   function renderTable(rows){
     const body=$('tbody');
-    body.innerHTML=(rows||[]).map(r=>`<tr>
+    body.innerHTML=(rows||[]).map((r,i)=>`<tr style="--i:${i*40}ms">
       <td data-label="الاسم">${escapeHtml(r.name)||'—'}</td>
       <td data-label="الأسرة">${escapeHtml(r.family)||'—'}</td>
-      <td data-label="الموبايل">${telLink(r.mobile)}</td>
+      <td data-label="الموبايل">
+        <div class="tel-wrap">
+          ${telLink(r.mobile)}
+          ${waLink(r.mobile) ? `<a class="wa-btn" target="_blank" rel="noopener" href="${waLink(r.mobile)}">${waSvg()} واتساب</a>` : ''}
+        </div>
+      </td>
       <td data-label="أب الاعتراف">${escapeHtml(r.father)||'—'}</td>
       <td data-label="صورة">${r.photo?`<img class="avatar" src="${escapeHtml(r.photo)}">`:'—'}</td>
       <td data-label="العنوان">${escapeHtml(r.address)||'—'}</td>
@@ -599,15 +657,4 @@
 })();
 </script>
 </body>
-
 </html>
-
-
-
-
-
-
-
-
-
-
