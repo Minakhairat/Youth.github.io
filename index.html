@@ -7,17 +7,74 @@
   <title>The Ninety-Nine</title>
   <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;700;900&display=swap" rel="stylesheet" />
   <style>
-    :root{ --primary:#1b335f; --accent:#e5c558; --bg:#f9f9fb; --card:#fff; --text:#111; --muted:#6b7280; --ok:#16a34a; --warn:#ca8a04; --danger:#dc2626; }
-    :root[data-theme="dark"]{ --bg:#0f1115; --card:#161a22; --text:#e7e7ea; --muted:#9aa3b2; }
+    :root{
+      --primary:#1b335f; --accent:#e5c558; --bg:#f9f9fb; --card:#fff; --text:#111; --muted:#6b7280;
+      --ok:#16a34a; --warn:#ca8a04; --danger:#dc2626;
+
+      /* غلاف ديناميكي */
+      --cover-h: clamp(180px, 28vh, 340px);
+      --cover-grad: linear-gradient(180deg, #00000066 0%, #00000022 40%, transparent 70%);
+      --cover-border: #00000014;
+    }
+    :root[data-theme="dark"]{
+      --bg:#0f1115; --card:#161a22; --text:#e7e7ea; --muted:#9aa3b2;
+      --cover-grad: linear-gradient(180deg, #0b0f1acc 0%, #0b0f1a66 45%, transparent 80%);
+      --cover-border:#ffffff14;
+    }
+
     *{box-sizing:border-box}
-    body{margin:0;font-family:'Cairo',sans-serif;background:var(--bg);color:var(--text);transition:background .3s,color .3s}
-    header{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:10px;background:var(--card);border-bottom:1px solid #0002;position:sticky;top:0;z-index:10}
+    body{margin:0;font-family:'Cairo',system-ui,Segoe UI,Roboto,Arial,sans-serif;background:var(--bg);color:var(--text);transition:background .3s,color .3s}
+
+    /* ======= الغلاف (Cover) ======= */
+    .cover{
+      position:relative; width:100%; height:var(--cover-h); overflow:hidden;
+      border-bottom:1px solid var(--cover-border);
+      isolation:isolate; /* عشان الفلتر */
+    }
+    .cover__inner{
+      position:absolute; inset:0; will-change:transform; transform:translate3d(0,0,0);
+    }
+    .cover__img{
+      position:absolute; inset:0; width:100%; height:100%; object-fit:cover; object-position:center;
+      filter:saturate(1.05) contrast(1.05);
+      transform:scale(1.06); /* بسيط عشان البارالاكس */
+    }
+    .cover__overlay{
+      position:absolute; inset:0; background:var(--cover-grad); pointer-events:none;
+    }
+    .cover__title{
+      position:absolute; inset-inline:16px; bottom:16px;
+      color:#fff; text-shadow:0 2px 16px #0008; font-weight:900; letter-spacing:.3px;
+      display:flex; align-items:flex-end; gap:10px; flex-wrap:wrap;
+    }
+    .cover__badge{
+      display:inline-flex; align-items:center; gap:6px;
+      padding:6px 10px; border-radius:999px; background:#ffffffdd; color:#0b0d10; font-weight:900;
+      border:1px solid #0002;
+    }
+    [data-theme="dark"] .cover__badge{ background:#111827dd; color:#e7e7ea; border-color:#ffffff1f }
+
+    /* ======= الهيدر ======= */
+    header{
+      display:flex;align-items:center;justify-content:space-between;gap:12px;
+      padding:10px 16px;background:var(--card);border-bottom:1px solid #0002;position:sticky;top:0;z-index:10
+    }
     .brand{display:flex;align-items:center;gap:12px}
-    .logo{height:50px;width:50px;border-radius:10px;border:2px solid var(--accent);object-fit:contain;background:#fff; animation: pop .6s ease}
+    .logo{
+      height:58px;width:58px;border-radius:14px;border:2px solid var(--accent);
+      object-fit:cover;background:#fff;box-shadow:0 6px 16px #0002; animation:pop .6s ease
+    }
+
+    /* ======= النافبار ======= */
     .nav{display:flex;gap:12px;justify-content:center;margin:12px;flex-wrap:wrap}
-    .nav button{padding:10px 14px;border-radius:10px;border:1px solid #0002;background:var(--card);cursor:pointer;font-weight:800;color:var(--text); transition:transform .15s, box-shadow .2s}
+    .nav button{
+      padding:10px 14px;border-radius:10px;border:1px solid #0002;background:var(--card);
+      cursor:pointer;font-weight:800;color:var(--text);transition:transform .15s, box-shadow .2s
+    }
     .nav button:hover{ transform: translateY(-2px); box-shadow:0 6px 14px #0003 }
     .nav button.active{background:var(--accent);color:#000}
+
+    /* ======= البطاقات والجداول ======= */
     .container{padding:16px;max-width:1200px;margin:auto}
     .card{background:var(--card);border:1px solid #0002;border-radius:16px;box-shadow:0 6px 20px #0002;margin-bottom:20px;overflow:hidden; animation: fadeUp .5s ease var(--i,0ms) both}
     .card-h{padding:14px 20px;font-weight:900;background:linear-gradient(90deg,var(--primary),var(--accent));color:#000; -webkit-background-clip:text; -webkit-text-fill-color:transparent;}
@@ -31,7 +88,7 @@
     .input{padding:10px;border:1px solid #0002;border-radius:10px;background:var(--card);color:var(--text)}
     .toolbar{display:flex;gap:8px;flex-wrap:wrap;align-items:center}
     .hint{color:var(--muted);font-size:13px}
-    .theme-toggle{cursor:pointer;font-size:14px;border:none;background:var(--accent);padding:6px 10px;border-radius:8px;font-weight:700}
+
     .table-wrap{border:1px solid #0002;border-radius:12px;overflow:auto;max-height:60vh}
     table{width:100%;border-collapse:separate;border-spacing:0;min-width:920px;color:var(--text)}
     th,td{padding:12px;text-align:start;border-bottom:1px solid #0002}
@@ -62,6 +119,7 @@
       td{border:none;padding:6px 0}
       td::before{content:attr(data-label) ' : ';font-weight:900;color:var(--muted)}
     }
+
     .stats-bar{display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:10px;margin:12px 0}
     .stat-box{background:var(--card);border:1px solid #0002;border-radius:12px;padding:10px;text-align:center;box-shadow:0 2px 8px #0001}
     .stat-box h3{margin:0;font-size:12px;color:var(--muted)}
@@ -69,6 +127,7 @@
     .error{padding:10px;border:1px solid #0002;border-radius:10px;background:#fee2e2;color:#7f1d1d}
     .att-grid{display:grid;grid-template-columns:1fr 1fr;gap:16px}
     @media(max-width:900px){.att-grid{grid-template-columns:1fr}}
+
     .toast-area{position:fixed;bottom:16px;left:50%;transform:translateX(-50%);display:flex;flex-direction:column;gap:8px;z-index:50}
     .toast{background:var(--card);color:var(--text);border:1px solid #0002;padding:10px 14px;border-radius:10px;box-shadow:0 6px 20px #0004;min-width:240px;transition:opacity .3s}
     .toast.ok{border-color:var(--ok)} .toast.warn{border-color:var(--warn)} .toast.err{border-color:var(--danger)}
@@ -80,17 +139,32 @@
   </style>
 </head>
 <body>
+
+  <!-- ======= الغلاف الديناميكي ======= -->
+  <section class="cover" id="cover">
+    <div class="cover__inner" id="coverInner">
+      <img class="cover__img" id="coverImg" alt="غلاف الموقع">
+      <div class="cover__overlay"></div>
+    </div>
+    <div class="cover__title">
+      <span style="font-size:clamp(18px,4vw,28px)">The Ninety-Nine</span>
+      <span class="cover__badge">خدمة الشباب</span>
+    </div>
+  </section>
+
+  <!-- ======= الهيدر ======= -->
   <header>
     <div class="brand">
       <img id="logoImg" class="logo" alt="شعار الخدمة">
       <h2>The Ninety-Nine</h2>
     </div>
     <div class="toolbar">
-      <button id="themeBtn" class="theme-toggle">🌙 Dark</button>
+      <button id="themeBtn" class="btn-ghost">🌙 Dark</button>
       <button id="logoutBtn" class="btn-danger" style="display:none">🚪 خروج</button>
     </div>
   </header>
 
+  <!-- ======= النافبار ======= -->
   <div class="nav">
     <button id="nav-login" class="active">🔐 دخول</button>
     <button id="nav-data">👥 بيانات</button>
@@ -98,7 +172,7 @@
     <button id="nav-stats">📊 إحصائيات</button>
   </div>
 
-  <!-- Login -->
+  <!-- ======= Login ======= -->
   <section id="page-login" class="container">
     <div class="card" style="--i:0ms">
       <div class="card-h">🔐 تسجيل الدخول</div>
@@ -114,7 +188,7 @@
     </div>
   </section>
 
-  <!-- Welcome -->
+  <!-- ======= Welcome ======= -->
   <section id="page-welcome" class="container" hidden>
     <div class="card" style="--i:80ms">
       <div class="card-h">👋 مرحبًا بك</div>
@@ -125,7 +199,7 @@
     </div>
   </section>
 
-  <!-- Data -->
+  <!-- ======= Data ======= -->
   <section id="page-data" class="container" hidden>
     <div class="card" style="--i:160ms">
       <div class="card-h">👥 بيانات المخدومين</div>
@@ -150,7 +224,7 @@
     </div>
   </section>
 
-  <!-- Attendance -->
+  <!-- ======= Attendance ======= -->
   <section id="page-att" class="container" hidden>
     <div class="card" style="--i:240ms">
       <div class="card-h">✅ تسجيل الحضور</div>
@@ -188,7 +262,7 @@
     </div>
   </section>
 
-  <!-- Stats -->
+  <!-- ======= Stats ======= -->
   <section id="page-stats" class="container" hidden>
     <div class="card" style="--i:320ms">
       <div class="card-h">📊 التحليلات</div>
@@ -224,6 +298,8 @@
   const toastArea=$('toastArea');
   function toast(msg,type='ok'){ const t=document.createElement('div'); t.className='toast '+type; t.textContent=msg; toastArea.appendChild(t); setTimeout(()=>{ t.style.opacity='0'; setTimeout(()=>t.remove(),400); },2800); }
 
+  /* ========== الشيتات ==========
+     (نفس كودك السابق – بدون تغيير وظيفي) */
   const SHEETS={
     f1b:{id:'1stXYnDRt6bhAnzsPmZI94j7S25tib4mi',edit:'https://docs.google.com/spreadsheets/d/1stXYnDRt6bhAnzsPmZI94j7S25tib4mi/edit',label:'Family 1 Boys'},
     f1g:{id:'1RC1KXwGJWfRDEfrDJaDymoSOoEstnxXP',edit:'https://docs.google.com/spreadsheets/d/1RC1KXwGJWfRDEfrDJaDymoSOoEstnxXP/edit',label:'Family 1 Girls'},
@@ -244,50 +320,73 @@
     'اذهبوا وتلمذوا جميع الأمم (مت 28:19)'
   ];
 
-  /* ===== Logo (raw GitHub link بدل blob) ===== */
+  /* ===== Logo/Cover (raw GitHub link + fallback) =====
+     بنستخدم نفس الصورة للّوجو الصغير والكفر الكبير */
   const logo=$('logoImg');
+  const coverImg=$('coverImg');
   const logoCandidates=[
-    // 1) رابط مباشر لنفس الـ commit اللي بعته — مضمون
+    // (1) رابط مباشر لنفس الـ commit (مضمون)
     'https://raw.githubusercontent.com/Minakhairat/Youth.github.io/7a5b81012d3dde0fc4d0f53acd35c67c75502670/IMG-20250908-WA0008.jpg',
-    // 2) احتياطي: على فرع main لو غيرت commit بعدين
+    // (2) احتياطي على main
     'https://raw.githubusercontent.com/Minakhairat/Youth.github.io/main/IMG-20250908-WA0008.jpg'
-    // // 3) لو عندك GitHub Pages:
+    // // (3) لو عامل GitHub Pages:
     // 'https://minakhairat.github.io/Youth.github.io/IMG-20250908-WA0008.jpg'
   ];
+  function setFallback(){
+    const svg = `
+      <svg xmlns="http://www.w3.org/2000/svg" width="800" height="400">
+        <defs>
+          <linearGradient id="g" x1="0" x2="1" y1="0" y2="0">
+            <stop offset="0%" stop-color="#1b335f"/><stop offset="100%" stop-color="#e5c558"/>
+          </linearGradient>
+        </defs>
+        <rect width="800" height="400" fill="#0b0f1a"/>
+        <circle cx="260" cy="200" r="160" fill="url(#g)" opacity="0.12"/>
+        <text x="60" y="230" font-family="Cairo, Arial" font-size="56" fill="#fff" font-weight="900">The Ninety-Nine</text>
+      </svg>`;
+    const data = 'data:image/svg+xml;utf8,'+encodeURIComponent(svg);
+    logo.src = data;
+    coverImg.src = data;
+  }
   (function setNextLogo(ix=0){
-    if(ix>=logoCandidates.length){
-      const fallbackSvg = `
-        <svg xmlns="http://www.w3.org/2000/svg" width="100" height="100">
-          <defs>
-            <linearGradient id="g" x1="0" x2="1" y1="0" y2="0">
-              <stop offset="0%" stop-color="#1b335f"/><stop offset="100%" stop-color="#e5c558"/>
-            </linearGradient>
-          </defs>
-          <rect width="100" height="100" rx="14" fill="white"/>
-          <circle cx="50" cy="50" r="42" fill="url(#g)" opacity="0.10"/>
-          <text x="50" y="56" text-anchor="middle" font-family="Cairo, Arial" font-size="16" fill="#1b335f" font-weight="900">LOGO</text>
-        </svg>`;
-      logo.src='data:image/svg+xml;utf8,'+encodeURIComponent(fallbackSvg);
-      logo.alt='الشعار';
-      logo.title='Logo';
-      return;
-    }
-    logo.onerror=()=>setNextLogo(ix+1);
-    logo.src=logoCandidates[ix];
-    logo.alt='شعار الخدمة';
-    logo.title='The Ninety-Nine';
+    if(ix>=logoCandidates.length){ setFallback(); return; }
+    const url = logoCandidates[ix];
+    // لو فشل رابط، جرّب اللي بعده
+    const img = new Image();
+    img.onload = ()=>{
+      logo.src = url;
+      coverImg.src = url;
+    };
+    img.onerror = ()=> setNextLogo(ix+1);
+    img.src = url;
   })();
 
-  // Theme
+  // ثيم
   const themeBtn=$('themeBtn');
-  function setTheme(mode){ document.documentElement.dataset.theme=mode; themeBtn.textContent= mode==='dark'? '☀️ Light':'🌙 Dark'; localStorage.setItem('theme',mode); }
+  function setTheme(mode){
+    document.documentElement.dataset.theme=mode;
+    themeBtn.textContent = mode==='dark' ? '☀️ Light' : '🌙 Dark';
+    localStorage.setItem('theme',mode);
+  }
   on(themeBtn,'click',()=>{ const cur=document.documentElement.dataset.theme||'light'; setTheme(cur==='dark'?'light':'dark'); });
   setTheme(localStorage.getItem('theme')||'light');
 
-  // Auth
+  // ====== بارالاكس خفيف للغلاف ======
+  const cover=$('cover');
+  const coverInner=$('coverInner');
+  function onScroll(){
+    // حرك الصورة لأعلى بنسبة بسيطة (0.25) لإحساس البارالاكس – آمن للموبايل
+    const y = Math.min(window.scrollY, 600);
+    coverInner.style.transform = `translate3d(0, ${y * -0.25}px, 0)`;
+  }
+  on(window,'scroll', onScroll);
+  on(window,'resize', ()=>{}); // جاهز لتعديلات مستقبلية
+  onScroll();
+
+  // ===== بقية منطق التطبيق (بدون تغيير) =====
   const LOGGED_KEY='loggedUser';
   const logoutBtn=$('logoutBtn');
-  function showPage(id){ document.querySelectorAll('section').forEach(s=>s.hidden=true); $(id).hidden=false; document.querySelectorAll('.nav button').forEach(b=>b.classList.remove('active')); const navBtn=document.getElementById('nav-'+id.split('-')[1]); if(navBtn) navBtn.classList.add('active'); }
+  function showPage(id){ document.querySelectorAll('section.container').forEach(s=>s.hidden=true); $(id).hidden=false; document.querySelectorAll('.nav button').forEach(b=>b.classList.remove('active')); const navBtn=document.getElementById('nav-'+id.split('-')[1]); if(navBtn) navBtn.classList.add('active'); }
   function isLogged(){ return !!(localStorage.getItem(LOGGED_KEY) || sessionStorage.getItem(LOGGED_KEY)); }
   function setLogged(user,remember){ if(remember){ localStorage.setItem(LOGGED_KEY, JSON.stringify(user)); } else { sessionStorage.setItem(LOGGED_KEY, JSON.stringify(user)); } toggleLogout(); }
   function clearLogged(){ localStorage.removeItem(LOGGED_KEY); sessionStorage.removeItem(LOGGED_KEY); toggleLogout(); }
@@ -315,7 +414,6 @@
   if(isLogged()){ toggleLogout(); showPage('page-data'); ensureData(true); } else { showPage('page-login'); }
   function guard(fn){ if(!isLogged()){ toast('من فضلك سجّل الدخول أولًا','warn'); showPage('page-login'); return; } fn(); }
 
-  // Data
   function fillGroups(){
     const opts=Object.entries(SHEETS).map(([k,v])=>`<option value="${k}">${v.label}</option>`).join('');
     $('groupSelect').innerHTML=opts; $('attGroup').innerHTML=opts;
@@ -410,22 +508,17 @@
   function toImg(val){ const s=String(val||'').trim(); if(!s) return ''; if(/^https?:\/\//.test(s)) return s; const m=s.match(/[\-\w]{25,}/); return m?`https://drive.google.com/uc?export=download&id=${m[0]}`:''; }
   function telLink(raw){ const digits=String(raw||'').replace(/[^\d+]/g,''); return digits? `<a class="tel" href="tel:${digits}">${escapeHtml(raw)}</a>` : (escapeHtml(raw)||'—'); }
 
-  /* ==== واتساب: تنضيف الرقم + لينك + أيقونة رسمية ==== */
+  /* ==== واتساب: تنضيف الرقم + لينك + أيقونة ==== */
   function cleanPhone(raw){
     const s = String(raw||'').trim();
     if(!s) return '';
-    let d = s.replace(/[^\d+]/g,'');   // سيب الأرقام و + فقط
-    if(d.startsWith('+')) d = d.slice(1); // wa.me بدون +
-    // مصر: 0xxxxxxxxxx -> 20xxxxxxxxx
-    if(/^0\d{10}$/.test(d)) d = '20' + d.slice(1);
+    let d = s.replace(/[^\d+]/g,'');
+    if(d.startsWith('+')) d = d.slice(1);
+    if(/^0\d{10}$/.test(d)) d = '20' + d.slice(1); // مصر
     return d;
   }
-  function waLink(raw){
-    const d = cleanPhone(raw);
-    return d ? `https://wa.me/${d}` : '';
-  }
+  function waLink(raw){ const d = cleanPhone(raw); return d ? `https://wa.me/${d}` : ''; }
   function waSvg(){
-    // مسار أيقونة واتساب (متوافق مع Bootstrap Icons – ترخيص MIT)
     return `<svg class="wa-ic" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16" aria-hidden="true">
       <path fill="currentColor" d="M13.601 2.326A7.892 7.892 0 0 0 8.002 0C3.584 0 .003 3.58.003 7.998c0 1.411.37 2.787 1.073 4.005L0 16l4.107-1.06a7.979 7.979 0 0 0 3.895 1.006h.003c4.418 0 7.998-3.58 7.998-7.998a7.934 7.934 0 0 0-2.402-5.622ZM8.002 14.5h-.003a6.5 6.5 0 0 1-3.316-.91l-.237-.141-2.435.628.65-2.374-.154-.243A6.492 6.492 0 0 1 1.503 8c0-3.586 2.913-6.5 6.499-6.5 1.736 0 3.366.676 4.593 1.903a6.45 6.45 0 0 1 1.903 4.595c0 3.586-2.914 6.502-6.496 6.502Zm3.67-4.875c-.2-.1-1.18-.58-1.363-.646-.182-.068-.315-.1-.448.1-.133.199-.514.646-.63.779-.116.134-.233.15-.433.05-.2-.1-.843-.31-1.606-.99-.593-.53-.993-1.18-1.11-1.377-.116-.2-.013-.307.087-.406.089-.088.2-.229.3-.343.1-.115.133-.2.2-.332.067-.134.033-.25-.017-.35-.05-.1-.448-1.08-.614-1.48-.16-.39-.328-.337-.448-.343-.115-.006-.25-.007-.383-.007a.74.74 0 0 0-.533.25c-.183.2-.7.684-.7 1.67 0 .984.717 1.93.817 2.066.1.135 1.41 2.153 3.417 3.018.478.206.85.33 1.14.423.48.154.917.132 1.262.08.385-.058 1.18-.482 1.35-.95.167-.469.167-.87.117-.95-.05-.083-.183-.133-.383-.233Z"/>
     </svg>`;
